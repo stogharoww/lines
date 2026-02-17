@@ -52,7 +52,7 @@ void AxisItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget
 
 
     // Деления по X
-    int tickCountX = (_width - abs(centerX)) / 50;
+    int tickCountX = (_width) / 60;
     qreal tickSpacingX = _width / tickCountX;
     NumpyC vecX = NumpyC::linspace(_xMin, _xMax, tickCountX+1);
 
@@ -118,4 +118,5 @@ void AxisItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget
 
 
 }
+
 

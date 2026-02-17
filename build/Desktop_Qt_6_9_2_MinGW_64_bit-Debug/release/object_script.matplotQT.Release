@@ -3,11 +3,10 @@ release/bottom.o
 release/function.o
 release/legend.o
 release/main.o
-release/dataseries.o
 release/numpyc.o
 release/plotapi.o
-release/plotitem.o
-release/plotscene.o
+release/plotinteraction.o
 release/qrc_res.o
 release/moc_bottom.o
 release/moc_plotapi.o
+release/moc_plotinteraction.o

@@ -54,4 +54,5 @@ private:
 
     QString formatTickValue(double value, double range) const;
 
+
 };

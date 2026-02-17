@@ -21,22 +21,18 @@ SOURCES += \
     function.cpp \
     legend.cpp \
     main.cpp \
-    dataseries.cpp \
     numpyc.cpp \
     plotapi.cpp \
-    plotitem.cpp \
-    plotscene.cpp
+    plotinteraction.cpp
 
 HEADERS += \
     axisitem.h \
     bottom.h \
-    dataseries.h \
     function.h \
     legend.h \
     numpyc.h \
     plotapi.h \
-    plotitem.h \
-    plotscene.h
+    plotinteraction.h
 
 FORMS +=
 

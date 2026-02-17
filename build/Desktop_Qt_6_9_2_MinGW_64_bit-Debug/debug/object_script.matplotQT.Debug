@@ -3,11 +3,10 @@ debug/bottom.o
 debug/function.o
 debug/legend.o
 debug/main.o
-debug/dataseries.o
 debug/numpyc.o
 debug/plotapi.o
-debug/plotitem.o
-debug/plotscene.o
+debug/plotinteraction.o
 debug/qrc_res.o
 debug/moc_bottom.o
 debug/moc_plotapi.o
+debug/moc_plotinteraction.o

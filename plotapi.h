@@ -3,6 +3,13 @@
 #include <QGraphicsView>
 #include <QWidget>
 #include <QObject>
+#include <QMouseEvent>
+#include "function.h"
+#include "axisitem.h"
+#include <QRectF>
+#include "plotinteraction.h"
+#include <QPointF>
+
 
 
 
@@ -25,7 +32,14 @@ public:
     void showAxis();
     void bottomClicked();
 
+/*
+    void mousePressEvent(QMouseEvent * event);
+    void mouseMoveEvent(QMouseEvent * event);
+    void mouseReleaseEvent(QMouseEvent * event);
+*/
+    void setMinMaxXY(double minX, double minY, double maxX, double maxY);
 
+    void moveEvent(QPointF delta);
 
 private:
 
@@ -34,7 +48,26 @@ private:
     QGraphicsScene *scene;
     int weight;
     int height;
+    bool dragging = false; //перетаскивание
+    QPoint lastMousePos; //последнее место где была мышка для перетаскивания графика
+    double _minX;
+    double _minY;
+    double _maxX;
+    double _maxY;
+    double rectWeight;
+    double rectHeight;
+    Function* func;
+    AxisItem *axies;
+    QRectF graphRect;
+    PlotInteraction *interaction;
+    double _start_minX;
+    double _start_minY;
+    double _start_maxX;
+    double _start_maxY;
 
+    void backToHomeXY();
+
+    void functionAndMove();
 
 };
 

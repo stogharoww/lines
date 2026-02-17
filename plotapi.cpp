@@ -16,6 +16,8 @@ PlotAPI::PlotAPI()
 {
     //первоначальная настройка окна:
     scene = new QGraphicsScene(this);
+
+
     resize(800, 400);
     setScene(scene);
 
@@ -31,6 +33,26 @@ PlotAPI::PlotAPI()
 
 }
 
+
+
+
+void PlotAPI::setMinMaxXY(double minX, double minY, double maxX, double maxY)
+{
+    _minX = minX;
+    _minY = minY;
+    _maxX = maxX;
+    _maxY = maxY;
+
+    _start_minX = minX;
+    _start_minY = minY;
+    _start_maxX = maxX;
+    _start_maxY = maxY;
+}
+
+
+
+
+
 /**
  * @brief PlotAPI::displayMainMenu
  * Отрисовывает графики, оси и прочее
@@ -41,8 +63,8 @@ void PlotAPI::displayMainMenu()
 
     QBrush brush(QColor(250, 250, 210));
     QBrush innerB(QColor(250, 0, 0));
-    double rectWeight = weight/1.5;
-    double rectHeight = height/1.5;
+    rectWeight = weight/1.5;
+    rectHeight = height/1.5;
     rect->setRect(0,0,rectWeight, rectHeight);
 
 /*
@@ -128,7 +150,7 @@ void PlotAPI::displayMainMenu()
     double maxY = std::ceil(npYres.max() / 100.0) * 100.0;
 
     // === Отрисовка ===
-    Function* func = new Function(npXres, npYres);
+    func = new Function(npXres, npYres);
     //func->setHeight(rectWeight, rectHeight); //смещение наверх и прочее
 
     func->setViewport(QRectF(minX, minY, maxX - minX, maxY - minY),
@@ -154,7 +176,7 @@ void PlotAPI::displayMainMenu()
     x = (weight - rectWeight) / 2;
     y = (height - rectHeight) / 2;
     rect->setPos(x, y);
-    AxisItem *axies = new AxisItem(rectWeight, rectHeight);
+    axies = new AxisItem(rectWeight, rectHeight);
     axies->setZValue(2); //наложение поверх всего
     axies->setSize(rectWeight, rectHeight); // физический размер
     axies->setLogicalRange(minX, maxX, minY, maxY);    // логический диапазон
@@ -164,10 +186,10 @@ void PlotAPI::displayMainMenu()
     axies->setPos(x, y);
     rect->setBrush(brush);
 
+    setMinMaxXY(minX, minY, maxX, maxY);
 
 
-
-
+    graphRect = QRectF(x, y, rectWeight, rectHeight);
 
     scene->addItem(rect);
     QString firstBtm = "Bottom кнопка";
@@ -176,11 +198,115 @@ void PlotAPI::displayMainMenu()
     scene->addItem(testBottom);
     connect(testBottom, &Bottom::clicked, this, &PlotAPI::bottomClicked);
 
+    interaction = new PlotInteraction(graphRect);
+    interaction->setZValue(100);
+    scene->addItem(interaction);
+
+    connect(interaction, &PlotInteraction::requested, this, &PlotAPI::moveEvent);
 
 }
+
+
+
+void PlotAPI::moveEvent(QPointF delta)
+{
+    double dx = -delta.x() * (_maxX - _minX) / rectWeight;
+    double dy = delta.y() * (_maxY - _minY) / rectHeight;
+
+    _minX += dx;
+    _maxX += dx;
+    _minY += dy;;
+    _maxY += dy;;
+
+
+    func->setViewport(QRectF(_minX, _minY, _maxX - _minX, _maxY - _minY),
+                      QRectF(0, 0, rectWeight, rectHeight));
+
+
+    axies->setLogicalRange(_minX, _maxX, _minY, _maxY);
+
+    scene->update();
+}
+
+void PlotAPI::backToHomeXY()
+{
+    _minX = _start_minX;
+    _minY = _start_minY;
+    _maxX = _start_maxX;
+    _maxY = _start_maxY;
+}
+
+
 void PlotAPI::bottomClicked(){
     resize(800, 400);
+    //возвращаем график к точке 0:0
+    backToHomeXY();
+    func->setViewport(QRectF(_minX, _minY, _maxX - _minX, _maxY - _minY),
+                      QRectF(0, 0, rectWeight, rectHeight));
+
+
+    axies->setLogicalRange(_minX, _maxX, _minY, _maxY);
+
+    scene->update();
+
+
 }
+
+
+
+/*
+void PlotAPI::mousePressEvent(QMouseEvent *event)
+{
+    QPoint pos = event->pos();
+    if (!graphRect.contains(pos)) return;
+
+    if (event->button() == Qt::LeftButton){
+        dragging = true;
+        lastMousePos = event->pos();
+    }
+}
+
+void PlotAPI::mouseMoveEvent(QMouseEvent *event)
+{
+    if (!dragging) return;
+    QPoint pos = event->pos();
+    if (!graphRect.contains(pos)) return;
+
+    QPoint delta = event->pos() - lastMousePos;
+    lastMousePos = event->pos();
+
+    double dx = -delta.x() * (_maxX - _minX) / rectWeight;
+    double dy = delta.y() * (_maxY - _minY) / rectHeight;
+
+    _minX += dx;
+    _maxX += dx;
+    _minY += dy;;
+    _maxY += dy;;
+
+
+    func->setViewport(QRectF(_minX, _minY, _maxX - _minX, _maxY - _minY),
+                      QRectF(0, 0, rectWeight, rectHeight));
+
+
+    axies->setLogicalRange(_minX, _maxX, _minY, _maxY);
+
+    scene->update();
+
+}
+
+void PlotAPI::mouseReleaseEvent(QMouseEvent *event)
+{
+    QPoint pos = event->pos();
+    if (!graphRect.contains(pos)) return;
+    if (event->button() == Qt::LeftButton){
+        dragging = false;
+    }
+}
+
+*/
+
+
+
 
 double PlotAPI::takeData() const
 {

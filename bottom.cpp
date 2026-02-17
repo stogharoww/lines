@@ -7,6 +7,8 @@ Bottom::Bottom(QString name, qreal w, qreal h, qreal ax, qreal ay)
 
     //Silver = QFontDatabase::applicationFontFamilies(id).at(0);
 
+    setAcceptHoverEvents(true);
+    setAcceptedMouseButtons(Qt::LeftButton);
 
     //draw the rect
     setRect(ax,ay,w,h);
@@ -41,12 +43,14 @@ void Bottom::setPuxmap(QString data)
 
 void Bottom::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    event->accept();
     emit clicked();
 
 }
 
 void Bottom::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
+    event->accept();
     //change color to cyan
     QBrush brush;
     brush.setStyle(Qt::SolidPattern);
@@ -56,6 +60,7 @@ void Bottom::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 
 void Bottom::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
+    event->accept();
     //change color to dark cyan
     QBrush brush;
     brush.setStyle(Qt::SolidPattern);
