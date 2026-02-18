@@ -30,7 +30,7 @@ void Function::setViewport(const QRectF& logicalRect, const QRectF& pixelRect)
     _offsetX = pixelRect.left() - logicalRect.left() * _scaleX;
     _offsetY = pixelRect.bottom() + logicalRect.top() * _scaleY;
 
-    rebuildPoints(_rawX, _rawY); // ← добавь это
+    rebuildPoints(_rawX, _rawY);
     update();
 }
 
@@ -40,6 +40,11 @@ QRectF Function::boundingRect() const
     return QRectF(_pixelRect.left() - 50, _pixelRect.top() - 50,
                   _pixelRect.width() + 100, _pixelRect.height() + 100);
 }
+
+
+
+
+
 
 void Function::rebuildPoints(const NumpyC& x, const NumpyC& y)
 {
@@ -71,6 +76,8 @@ void Function::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget
     painter->setPen(pen);
 
     for (int i = 1; i < _points.size(); ++i) {
-        painter->drawLine(_points[i - 1], _points[i]);
+        if (_pixelRect.contains(_points[i]))
+            painter->drawLine(_points[i - 1], _points[i]);
     }
 }
+

@@ -15,6 +15,7 @@ public:
     QRectF boundingRect() const override;
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*) override;
 
+
 private:
     QVector<QPointF> _points;       // Пиксельные координаты
     QRectF _logicalRect;            // Логические координаты
@@ -25,6 +26,8 @@ private:
     double _offsetY = 0.0;
     NumpyC _rawX;
     NumpyC _rawY;
+    QRectF _movedRect;
+
 
     void rebuildPoints(const NumpyC& x, const NumpyC& y);
 };

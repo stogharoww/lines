@@ -223,7 +223,7 @@ void PlotAPI::moveEvent(QPointF delta)
                       QRectF(0, 0, rectWeight, rectHeight));
 
 
-    axies->setLogicalRange(_minX, _maxX, _minY, _maxY);
+    axies->moveAxies(dx, dy);
 
     scene->update();
 }
@@ -236,6 +236,11 @@ void PlotAPI::backToHomeXY()
     _maxY = _start_maxY;
 }
 
+void PlotAPI::functionAndMove()
+{
+
+}
+
 
 void PlotAPI::bottomClicked(){
     resize(800, 400);
@@ -246,6 +251,7 @@ void PlotAPI::bottomClicked(){
 
 
     axies->setLogicalRange(_minX, _maxX, _minY, _maxY);
+    axies->moveAxies(0, 0);
 
     scene->update();
 

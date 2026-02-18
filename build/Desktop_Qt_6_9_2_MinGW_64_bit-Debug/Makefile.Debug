@@ -893,7 +893,8 @@ debug/axisitem.o: ../../axisitem.cpp ../../axisitem.h \
 		../../numpyc.h \
 		../../../../Qt6/6.9.2/mingw_64/include/QtCore/QVector \
 		../../../../Qt6/6.9.2/mingw_64/include/QtCore/qvector.h \
-		../../../../Qt6/6.9.2/mingw_64/include/QtWidgets/QGraphicsTextItem
+		../../../../Qt6/6.9.2/mingw_64/include/QtWidgets/QGraphicsTextItem \
+		../../../../Qt6/6.9.2/mingw_64/include/QtCore/QDebug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\axisitem.o ..\..\axisitem.cpp
 
 debug/bottom.o: ../../bottom.cpp ../../bottom.h \

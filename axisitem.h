@@ -22,11 +22,17 @@ public:
         _x = x;
         _y = y;
     }
+
+
     void setLogicalRange(qreal xMin, qreal xMax, qreal yMin, qreal yMax) {
         _xMin = xMin;
         _xMax = xMax;
         _yMin = yMin;
         _yMax = yMax;
+        _xMinTmp = xMin;
+        _xMaxTmp = xMax;
+        _yMinTmp = yMin;
+        _yMaxTmp = yMax;
         update(); // перерисовать
     }
 
@@ -41,6 +47,7 @@ public:
     }
 
 
+    void moveAxies(double dx, double dy);
 private:
     QString _nameX = "X";
     QString _nameY = "Y";
@@ -51,8 +58,12 @@ private:
     qreal _x, _y;
     qreal _xMin, _xMax, _yMin, _yMax;
     QString _nameGraph = "График";
+    double _range = 1;
+    qreal _xMinTmp, _xMaxTmp, _yMinTmp, _yMaxTmp;
+    double _dx = 0;
+    double _dy = 0;
 
-    QString formatTickValue(double value, double range) const;
+    QString formatTickValue(double value, double range);
 
 
 };
