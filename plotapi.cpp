@@ -27,7 +27,7 @@ PlotAPI::PlotAPI()
     height = size.height();
 
     scene->setSceneRect(0, 0, weight, height);
-
+    //view->setMouseTracking(true);
     displayMainMenu();
 
 
@@ -59,13 +59,13 @@ void PlotAPI::setMinMaxXY(double minX, double minY, double maxX, double maxY)
  */
 void PlotAPI::displayMainMenu()
 {
-    QGraphicsRectItem *rect = new QGraphicsRectItem();
+    _rect = new QGraphicsRectItem();
 
     QBrush brush(QColor(250, 250, 210));
     QBrush innerB(QColor(250, 0, 0));
     rectWeight = weight/1.5;
     rectHeight = height/1.5;
-    rect->setRect(0,0,rectWeight, rectHeight);
+    _rect->setRect(0,0,rectWeight, rectHeight);
 
 /*
     //отрисовка функции:
@@ -144,11 +144,22 @@ void PlotAPI::displayMainMenu()
     npYres.push_back(*npY2);
 
     // === Вычисление логических границ ===
-    double minX = npXres.min();
-    double maxX = npXres.max();
-    double minY = std::floor(npYres.min() / 100.0) * 100.0;
-    double maxY = std::ceil(npYres.max() / 100.0) * 100.0;
+    double minX, maxX, minY, maxY;
 
+    if (_minX == _maxX){
+
+        minX = npXres.min();
+        maxX = npXres.max();
+        minY = std::floor(npYres.min() / 100.0) * 100.0;
+        maxY = std::ceil(npYres.max() / 100.0) * 100.0;
+
+    }
+    else {
+        minX = _minX;
+        maxX = _maxX;
+        minY = _minY;
+        maxY = _maxY;
+    }
     // === Отрисовка ===
     func = new Function(npXres, npYres);
     //func->setHeight(rectWeight, rectHeight); //смещение наверх и прочее
@@ -169,13 +180,13 @@ void PlotAPI::displayMainMenu()
 
 
 
-    func->setParentItem(rect);
+    func->setParentItem(_rect);
 
     //оси:
     double x, y;
     x = (weight - rectWeight) / 2;
     y = (height - rectHeight) / 2;
-    rect->setPos(x, y);
+    _rect->setPos(x, y);
     axies = new AxisItem(rectWeight, rectHeight);
     axies->setZValue(2); //наложение поверх всего
     axies->setSize(rectWeight, rectHeight); // физический размер
@@ -184,14 +195,15 @@ void PlotAPI::displayMainMenu()
     axies->setNameGraph("Парабола и потом синус");
     scene->addItem(axies);
     axies->setPos(x, y);
-    rect->setBrush(brush);
+    _rect->setBrush(brush);
+
 
     setMinMaxXY(minX, minY, maxX, maxY);
 
 
     graphRect = QRectF(x, y, rectWeight, rectHeight);
 
-    scene->addItem(rect);
+    scene->addItem(_rect);
     QString firstBtm = "Bottom кнопка";
     Bottom *testBottom = new Bottom("", 40, 40);
     testBottom->setPuxmap("://res/icons8-home-30.png");
@@ -199,10 +211,21 @@ void PlotAPI::displayMainMenu()
     connect(testBottom, &Bottom::clicked, this, &PlotAPI::bottomClicked);
 
     interaction = new PlotInteraction(graphRect);
-    interaction->setZValue(100);
+    interaction->setZValue(105);
     scene->addItem(interaction);
 
     connect(interaction, &PlotInteraction::requested, this, &PlotAPI::moveEvent);
+
+    _rectMoving = new QGraphicsRectItem();
+    _rectMoving->setZValue(100);
+    _textItem = new QGraphicsTextItem("Text", _rectMoving);
+    //_textItem->setZValue(101);
+
+
+
+
+    connect(interaction, &PlotInteraction::moving, this, &PlotAPI::movingMouse);
+    connect(interaction, &PlotInteraction::leaved, this, &PlotAPI::leaved);
 
 }
 
@@ -226,6 +249,64 @@ void PlotAPI::moveEvent(QPointF delta)
     axies->moveAxies(dx, dy);
 
     scene->update();
+}
+
+void PlotAPI::movingMouse(QPointF pos)
+{
+    // позиция квадрата
+    QBrush brushRect(QColor(0, 0, 0, 180));
+    _rectMoving->setBrush(brushRect);
+    _rectMoving->setRect(0, 0, -100, -20);
+    _rectMoving->setPos(pos);
+
+    // позиция текста
+    QRectF tr = _textItem->boundingRect();
+    QRectF rr = _rectMoving->rect();
+    qreal xR = rr.left() + (rr.width() - tr.width()) / 2.0;
+    qreal yR = rr.top() + (rr.height() - tr.height()) / 2.0;
+
+    _textItem->setPos(xR, yR);
+
+    scene->update();
+    //scene->addItem(_rectMoving);
+    /*
+    _rectMoving = new QGraphicsRectItem();
+    int x = pos.x();
+    int y = pos.y();
+    QBrush brush(QColor(0, 0, 0));
+    _rectMoving->setBrush(brush);
+    _rectMoving->setRect(x, y, 50, 20);
+    scene->addItem(_rectMoving);
+*/
+
+
+    //текст
+    QPointF posInFunc = func->mapFromScene(interaction->mapToScene(pos));
+    QPointF logicalPos = func->pixelToLogical(posInFunc);
+    QString text = QString("x: %1, y: %2")
+                       .arg(logicalPos.x(), 0, 'f', 2)
+                       .arg(logicalPos.y(), 0, 'f', 2);
+
+    _textItem->setPlainText(text);
+
+
+
+
+}
+
+void PlotAPI::leaved(bool leav)
+{
+    if (!leav){
+        scene->addItem(_rectMoving);
+        //scene->addItem(_textItem);
+    }
+    if (leav){
+        qDebug() << "leaved";
+
+        scene->removeItem(_rectMoving);
+        //scene->removeItem(_textItem);
+        scene->update();
+    }
 }
 
 void PlotAPI::backToHomeXY()

@@ -81,3 +81,26 @@ void Function::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget
     }
 }
 
+QPointF Function::pixelToLogical(const QPointF &p) const
+{
+    double x = (p.x() - _offsetX) / _scaleX;
+    double y = (_offsetY - p.y()) / _scaleY;
+    return QPointF(x, y);
+}
+
+QPointF Function::logicalToPixel(const QPointF &p) const
+{
+    double x = _offsetX + p.x() * _scaleX;
+    double y = _offsetY - p.y() * _scaleY;
+}
+
+QRectF Function::getLogicalRect() const
+{
+    return _logicalRect;
+}
+
+QRectF Function::getPixelRect() const
+{
+    return _pixelRect;
+}
+

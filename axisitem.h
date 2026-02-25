@@ -1,5 +1,6 @@
 #pragma once
 #include <QGraphicsItem>
+#include "numpyc.h"
 
 
 // Хранит данные об оси
@@ -48,6 +49,11 @@ public:
 
 
     void moveAxies(double dx, double dy);
+
+
+    NumpyC getX();
+    NumpyC getY();
+
 private:
     QString _nameX = "X";
     QString _nameY = "Y";
@@ -64,6 +70,9 @@ private:
     double _dy = 0;
 
     QString formatTickValue(double value, double range);
+
+    NumpyC vecX;
+    NumpyC vecY;
 
 
 };

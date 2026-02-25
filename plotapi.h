@@ -41,6 +41,10 @@ public:
 
     void moveEvent(QPointF delta);
 
+    void movingMouse(QPointF pos);
+
+    void leaved(bool leav);
+
 private:
 
     //void centratePlot();
@@ -50,10 +54,10 @@ private:
     int height;
     bool dragging = false; //перетаскивание
     QPoint lastMousePos; //последнее место где была мышка для перетаскивания графика
-    double _minX;
-    double _minY;
-    double _maxX;
-    double _maxY;
+    double _minX = 0;
+    double _minY = 0;
+    double _maxX = 0;
+    double _maxY = 0;
     double rectWeight;
     double rectHeight;
     Function* func;
@@ -64,6 +68,9 @@ private:
     double _start_minY;
     double _start_maxX;
     double _start_maxY;
+    QGraphicsRectItem * _rectMoving;
+    QGraphicsTextItem * _textItem;
+    QGraphicsRectItem *_rect;
 
     void backToHomeXY();
 

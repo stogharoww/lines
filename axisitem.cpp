@@ -65,7 +65,7 @@ void AxisItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget
     // Деления по X
     tickCountX = (_width) / 60;
     qreal tickSpacingX = _width / tickCountX;
-    NumpyC vecX = NumpyC::linspace(_xMin, _xMax, tickCountX+1);
+    vecX = NumpyC::linspace(_xMin, _xMax, tickCountX+1);
 
     for (int i = 0; i <= tickCountX; i++) {
         painter->setPen(axisPen);
@@ -87,7 +87,7 @@ void AxisItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget
     // Деления по Y
     tickCountY = (_height) / 50;
     qreal tickSpacingY = _height / tickCountY;
-    NumpyC vecY = NumpyC::linspace(_yMin, _yMax, tickCountY+1);
+    vecY = NumpyC::linspace(_yMin, _yMax, tickCountY+1);
 
     for (int i = 0; i <= tickCountY; ++i) {
         painter->setPen(axisPen);
@@ -159,4 +159,14 @@ void AxisItem::moveAxies(double dx, double dy)
     }
 
     update();
+}
+
+NumpyC AxisItem::getX()
+{
+    return vecX;
+}
+
+NumpyC AxisItem::getY()
+{
+    return vecY;
 }

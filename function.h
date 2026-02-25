@@ -15,6 +15,11 @@ public:
     QRectF boundingRect() const override;
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*) override;
 
+    QPointF pixelToLogical(const QPointF& p) const;
+    QPointF logicalToPixel(const QPointF& p) const;
+    QRectF getLogicalRect() const;
+    QRectF getPixelRect() const;
+
 
 private:
     QVector<QPointF> _points;       // Пиксельные координаты

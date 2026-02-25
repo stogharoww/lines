@@ -6,6 +6,8 @@
 #include <QBrush>
 #include <QPen>
 #include <QPointF>
+#include <QGraphicsSceneWheelEvent>
+#include "followingcoords.h"
 
 class PlotInteraction : public QObject, public QGraphicsRectItem
 {
@@ -16,16 +18,26 @@ public:
 
 signals:
     void requested(QPointF delta);
+    void moving(QPointF pos);
+    void leaved(bool leave);
 
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent  * event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent  * event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent  * event);
+    void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
+    //void mouseCircleEvent(QGraphicsSceneWheelEvent * event);
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
 
 private:
     bool dragging = false;
     QPointF lastPos;
+    QPointF movingPos;
+    FollowingCoords * _followMouse;
+    QRectF _rect;
+
 };
 
 

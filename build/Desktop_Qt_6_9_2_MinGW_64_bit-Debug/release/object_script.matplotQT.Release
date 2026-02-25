@@ -1,5 +1,6 @@
 release/axisitem.o
 release/bottom.o
+release/followingcoords.o
 release/function.o
 release/legend.o
 release/main.o

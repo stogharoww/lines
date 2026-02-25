@@ -1,5 +1,6 @@
 debug/axisitem.o
 debug/bottom.o
+debug/followingcoords.o
 debug/function.o
 debug/legend.o
 debug/main.o
