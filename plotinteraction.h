@@ -7,7 +7,7 @@
 #include <QPen>
 #include <QPointF>
 #include <QGraphicsSceneWheelEvent>
-#include "followingcoords.h"
+//#include "followingcoords.h"
 
 class PlotInteraction : public QObject, public QGraphicsRectItem
 {
@@ -39,7 +39,6 @@ private:
     bool dragging = false;
     QPointF lastPos;
     QPointF movingPos;
-    FollowingCoords * _followMouse;
     QRectF _rect;
 
 };

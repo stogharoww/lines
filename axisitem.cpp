@@ -35,7 +35,7 @@ QString AxisItem::formatTickValue(double value, double range)
 
 void AxisItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)
 {
-    QPen axisPen(Qt::red, 2);
+    QPen axisPen(QColor(211, 211, 211), 2);
     painter->setPen(axisPen);
     QPen gridPen(Qt::gray, 1);
 

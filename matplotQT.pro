@@ -18,7 +18,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     axisitem.cpp \
     bottom.cpp \
-    followingcoords.cpp \
     function.cpp \
     legend.cpp \
     main.cpp \
@@ -29,7 +28,6 @@ SOURCES += \
 HEADERS += \
     axisitem.h \
     bottom.h \
-    followingcoords.h \
     function.h \
     legend.h \
     numpyc.h \
