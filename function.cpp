@@ -26,6 +26,8 @@ void Function::setViewport(const QRectF& logicalRect, const QRectF& pixelRect)
 
     _scaleX = qRound((pixelRect.width() / w) * 1000) / 1000.0;
     _scaleY = qRound((pixelRect.height() / h) * 1000) / 1000.0;
+    //_scaleX = pixelRect.width() / w;
+    //_scaleY = pixelRect.height() / h;
 
     _offsetX = pixelRect.left() - logicalRect.left() * _scaleX;
     _offsetY = pixelRect.bottom() + logicalRect.top() * _scaleY;

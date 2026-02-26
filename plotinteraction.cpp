@@ -68,6 +68,22 @@ void PlotInteraction::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     emit leaved(true);
 }
+
+void PlotInteraction::wheelEvent(QGraphicsSceneWheelEvent *event)
+{
+    event->accept();
+    //QPointF scenePos = event->scenePos();
+    QPointF localPos = event->pos();
+    //QPointF pixelDelta = event->pixelDelta();
+    int delta = event->delta();
+
+    //qDebug() << delta << " " << localPos;
+
+    emit wheel(localPos, delta);
+
+
+
+}
 /*
 void PlotInteraction::mouseCircleEvent(QGraphicsSceneWheelEvent *event)
 {

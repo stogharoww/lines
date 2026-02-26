@@ -38,10 +38,38 @@ template <> constexpr inline auto PlotAPI::qt_create_metaobjectdata<qt_meta_tag_
 {
     namespace QMC = QtMocConstants;
     QtMocHelpers::StringRefStorage qt_stringData {
-        "PlotAPI"
+        "PlotAPI",
+        "bottomClicked",
+        "",
+        "moveEvent",
+        "delta",
+        "movingMouse",
+        "pos",
+        "leaved",
+        "leav",
+        "wheel",
+        "localPos"
     };
 
     QtMocHelpers::UintData qt_methods {
+        // Slot 'bottomClicked'
+        QtMocHelpers::SlotData<void()>(1, 2, QMC::AccessPublic, QMetaType::Void),
+        // Slot 'moveEvent'
+        QtMocHelpers::SlotData<void(QPointF)>(3, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QPointF, 4 },
+        }}),
+        // Slot 'movingMouse'
+        QtMocHelpers::SlotData<void(QPointF)>(5, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QPointF, 6 },
+        }}),
+        // Slot 'leaved'
+        QtMocHelpers::SlotData<void(bool)>(7, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Bool, 8 },
+        }}),
+        // Slot 'wheel'
+        QtMocHelpers::SlotData<void(QPointF, int)>(9, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QPointF, 10 }, { QMetaType::Int, 4 },
+        }}),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -63,10 +91,16 @@ Q_CONSTINIT const QMetaObject PlotAPI::staticMetaObject = { {
 void PlotAPI::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     auto *_t = static_cast<PlotAPI *>(_o);
-    (void)_t;
-    (void)_c;
-    (void)_id;
-    (void)_a;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        switch (_id) {
+        case 0: _t->bottomClicked(); break;
+        case 1: _t->moveEvent((*reinterpret_cast< std::add_pointer_t<QPointF>>(_a[1]))); break;
+        case 2: _t->movingMouse((*reinterpret_cast< std::add_pointer_t<QPointF>>(_a[1]))); break;
+        case 3: _t->leaved((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 4: _t->wheel((*reinterpret_cast< std::add_pointer_t<QPointF>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
+        default: ;
+        }
+    }
 }
 
 const QMetaObject *PlotAPI::metaObject() const
@@ -85,6 +119,18 @@ void *PlotAPI::qt_metacast(const char *_clname)
 int PlotAPI::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
     _id = QGraphicsView::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 5)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 5;
+    }
+    if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
+        if (_id < 5)
+            *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
+        _id -= 5;
+    }
     return _id;
 }
 QT_WARNING_POP

@@ -7,7 +7,7 @@
 #include <function.h>
 #include <numpyc.h>
 #include <QPen>
-
+#include <algorithm>
 
 /**
  * @brief PlotAPI::PlotAPI Инициализирует окно со всей отрисовкой
@@ -146,26 +146,33 @@ void PlotAPI::displayMainMenu()
     // === Вычисление логических границ ===
     double minX, maxX, minY, maxY;
 
-    if (_minX == _maxX){
+    if (_minX == _maxX){ // 1 запуск с инициализацией _logicalRect
 
         minX = npXres.min();
         maxX = npXres.max();
         minY = std::floor(npYres.min() / 100.0) * 100.0;
         maxY = std::ceil(npYres.max() / 100.0) * 100.0;
 
+        _logicalRect = QRectF(minX, minY, maxX - minX, maxY - minY);
+        _baseRect = _logicalRect;
+        setMinMaxXY(minX, minY, maxX, maxY);
+
     }
     else {
-        minX = _minX;
-        maxX = _maxX;
-        minY = _minY;
-        maxY = _maxY;
+        // используем уже существующий _logicalRect
+        minX = _logicalRect.left();
+        maxX = _logicalRect.right();
+        minY = _logicalRect.top();
+        maxY = _logicalRect.bottom();
     }
     // === Отрисовка ===
     func = new Function(npXres, npYres);
     //func->setHeight(rectWeight, rectHeight); //смещение наверх и прочее
 
-    func->setViewport(QRectF(minX, minY, maxX - minX, maxY - minY),
-                      QRectF(0, 0, rectWeight, rectHeight));
+
+
+    _pixelRect = QRectF(0, 0, rectWeight, rectHeight);
+    func->setViewport(_logicalRect, _pixelRect);
 
 
 
@@ -226,6 +233,7 @@ void PlotAPI::displayMainMenu()
 
     connect(interaction, &PlotInteraction::moving, this, &PlotAPI::movingMouse);
     connect(interaction, &PlotInteraction::leaved, this, &PlotAPI::leaved);
+    connect(interaction, &PlotInteraction::wheel, this, &PlotAPI::wheel);
 
 }
 
@@ -241,9 +249,10 @@ void PlotAPI::moveEvent(QPointF delta)
     _minY += dy;;
     _maxY += dy;;
 
-
-    func->setViewport(QRectF(_minX, _minY, _maxX - _minX, _maxY - _minY),
-                      QRectF(0, 0, rectWeight, rectHeight));
+    _logicalRect.setRect(_minX, _minY, _maxX - _minX, _maxY - _minY);
+    //_logicalRect = logWheelRect(_logicalRect);
+    func->setViewport(_logicalRect,
+                      _pixelRect);
 
 
     axies->moveAxies(dx, dy);
@@ -301,12 +310,76 @@ void PlotAPI::leaved(bool leav)
         //scene->addItem(_textItem);
     }
     if (leav){
-        qDebug() << "leaved";
+        //qDebug() << "leaved";
 
         scene->removeItem(_rectMoving);
         //scene->removeItem(_textItem);
         scene->update();
     }
+}
+
+void PlotAPI::wheel(QPointF localPos, int delta)
+{
+    // масштабируем функцию
+    flagWheel = 1;
+
+    double k = 0.1;
+    _factor -= k * delta / 120;
+    _factor = std::max(0.001, _factor);
+
+    _factor = std::min(_factor, 2.0);
+    qDebug() << _factor;
+
+    QPointF scenePos = interaction->mapToScene(localPos);
+    QPointF posInFunc = func->mapFromScene(scenePos);
+    QPointF logicalPos = func->pixelToLogical(posInFunc);
+
+    QRectF r = _logicalRect;
+
+    double newW = _baseRect.width() * _factor;
+    double newH = _baseRect.height() * _factor;
+
+    double dx = logicalPos.x() - r.left();
+    double dy = logicalPos.y() - r.top();
+
+    double kx = dx / r.width();
+    double ky = dy / r.height();
+
+    double newLeft = logicalPos.x() - newW * kx;
+    double newTop = logicalPos.y() - newH * ky;
+    QRectF newRect = QRectF(newLeft, newTop, newW, newH);
+    if (newRect.width() < 10) return;
+    if (newRect.height() < 10) return;
+
+    _logicalRect = newRect;
+
+
+
+
+
+
+
+    //QRectF newRect = logWheelRect(_logicalRect);
+    //if (newRect.width() < 10) return;
+    //if (newRect.height() < 10) return;
+
+    //_logicalRect = newRect;
+
+    _minX = _logicalRect.left();
+    _maxX = _logicalRect.right();
+    _minY = _logicalRect.top();
+    _maxY = _logicalRect.bottom();
+
+
+    func->setViewport(_logicalRect, _pixelRect);
+
+    // применяем масштабирование на оси
+    axies->setLogicalRange(_logicalRect.left(), _logicalRect.right(), _logicalRect.top(), _logicalRect.bottom());
+
+
+
+    scene->update();
+
 }
 
 void PlotAPI::backToHomeXY()
@@ -322,19 +395,49 @@ void PlotAPI::functionAndMove()
 
 }
 
+QRectF PlotAPI::logWheelRect(QRectF logicalRect)
+{
+    QRectF rect = logicalRect;
+    QPointF center = rect.center();
+    QSizeF newSize = rect.size() * _factor;
+
+
+    QRectF newRect(center - QPointF(newSize.width() / 2, newSize.height() / 2), newSize);
+
+    return newRect;
+}
+
 
 void PlotAPI::bottomClicked(){
+    /*
     resize(800, 400);
     //возвращаем график к точке 0:0
+    _logicalRect = _baseRect;
     backToHomeXY();
-    func->setViewport(QRectF(_minX, _minY, _maxX - _minX, _maxY - _minY),
-                      QRectF(0, 0, rectWeight, rectHeight));
+    _factor = 1;
+    flagWheel = 0;
+
+    _pixelRect.setRect(0, 0, rectWeight, rectHeight);
+
+    func->setViewport(_logicalRect, _pixelRect);
 
 
     axies->setLogicalRange(_minX, _maxX, _minY, _maxY);
     axies->moveAxies(0, 0);
 
+
     scene->update();
+*/
+
+    resize(800, 400);
+    scene->clear();
+
+    _minX = 0;
+    _maxX = 0;
+    _factor = 1;
+    flagWheel = 0;
+
+    displayMainMenu();
 
 
 }
@@ -411,6 +514,8 @@ void PlotAPI::resizeEvent(QResizeEvent *event)
     QSize newSize = viewport()->size();
     weight = newSize.width();
     height = newSize.height();
+    //_logicalRect = logWheelRect(_logicalRect);
+
     refresh();
 }
 /**
@@ -418,11 +523,20 @@ void PlotAPI::resizeEvent(QResizeEvent *event)
  */
 void PlotAPI::refresh()
 {
+
     scene->clear();
     scene->update();
     scene->setSceneRect(0, 0, weight, height);
     displayMainMenu();
+    //_logicalRect = logWheelRect(_logicalRect);
+    func->setViewport(_logicalRect, _pixelRect);
+    axies->setLogicalRange(_logicalRect.left(), _logicalRect.right(),
+                           _logicalRect.top(), _logicalRect.bottom());
+    scene->update();
     //fitInView(scene->itemsBoundingRect(), Qt::KeepAspectRatio);
+
+
+
 
 
 }

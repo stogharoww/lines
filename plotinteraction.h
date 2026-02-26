@@ -21,6 +21,8 @@ signals:
     void moving(QPointF pos);
     void leaved(bool leave);
 
+    void wheel(QPointF localPos, int delta);
+
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent  * event);
@@ -30,6 +32,8 @@ protected:
     //void mouseCircleEvent(QGraphicsSceneWheelEvent * event);
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+    void wheelEvent(QGraphicsSceneWheelEvent *event);
+
 
 private:
     bool dragging = false;

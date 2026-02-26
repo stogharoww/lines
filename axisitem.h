@@ -36,6 +36,17 @@ public:
         _yMaxTmp = yMax;
         update(); // перерисовать
     }
+    void setLogicalRange(QVector<qreal> vec){
+        qreal xMin = vec[0];
+        qreal xMax = vec[1];
+        qreal yMin = vec[2];
+        qreal yMax = vec[3];
+        setLogicalRange(xMin, xMax, yMin, yMax);
+    }
+
+    QVector<qreal> getLogicalRange(){
+        return {_xMin, _xMax, _yMin, _yMax};
+    }
 
 
 

@@ -30,20 +30,21 @@ public:
      * @brief showAxis показывает оси Х и Y
      */
     void showAxis();
-    void bottomClicked();
 
 /*
     void mousePressEvent(QMouseEvent * event);
     void mouseMoveEvent(QMouseEvent * event);
     void mouseReleaseEvent(QMouseEvent * event);
 */
+
     void setMinMaxXY(double minX, double minY, double maxX, double maxY);
 
+public slots:
+    void bottomClicked();
     void moveEvent(QPointF delta);
-
     void movingMouse(QPointF pos);
-
     void leaved(bool leav);
+    void wheel(QPointF localPos, int delta);
 
 private:
 
@@ -71,10 +72,25 @@ private:
     QGraphicsRectItem * _rectMoving;
     QGraphicsTextItem * _textItem;
     QGraphicsRectItem *_rect;
+    QRectF _baseRect;
 
     void backToHomeXY();
 
     void functionAndMove();
+
+
+    QRectF _logicalRect;
+    QRectF _pixelRect;
+
+
+
+    double _factor = 1;
+
+    bool flagWheel = 0;
+
+
+    QRectF logWheelRect(QRectF logicalRect);
+
 
 };
 

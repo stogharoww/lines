@@ -45,7 +45,9 @@ template <> constexpr inline auto PlotInteraction::qt_create_metaobjectdata<qt_m
         "moving",
         "pos",
         "leaved",
-        "leave"
+        "leave",
+        "wheel",
+        "localPos"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -60,6 +62,10 @@ template <> constexpr inline auto PlotInteraction::qt_create_metaobjectdata<qt_m
         // Signal 'leaved'
         QtMocHelpers::SignalData<void(bool)>(6, 2, QMC::AccessPublic, QMetaType::Void, {{
             { QMetaType::Bool, 7 },
+        }}),
+        // Signal 'wheel'
+        QtMocHelpers::SignalData<void(QPointF, int)>(8, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QPointF, 9 }, { QMetaType::Int, 3 },
         }}),
     };
     QtMocHelpers::UintData qt_properties {
@@ -87,6 +93,7 @@ void PlotInteraction::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
         case 0: _t->requested((*reinterpret_cast< std::add_pointer_t<QPointF>>(_a[1]))); break;
         case 1: _t->moving((*reinterpret_cast< std::add_pointer_t<QPointF>>(_a[1]))); break;
         case 2: _t->leaved((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 3: _t->wheel((*reinterpret_cast< std::add_pointer_t<QPointF>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
         default: ;
         }
     }
@@ -96,6 +103,8 @@ void PlotInteraction::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
         if (QtMocHelpers::indexOfMethod<void (PlotInteraction::*)(QPointF )>(_a, &PlotInteraction::moving, 1))
             return;
         if (QtMocHelpers::indexOfMethod<void (PlotInteraction::*)(bool )>(_a, &PlotInteraction::leaved, 2))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (PlotInteraction::*)(QPointF , int )>(_a, &PlotInteraction::wheel, 3))
             return;
     }
 }
@@ -121,14 +130,14 @@ int PlotInteraction::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
+        if (_id < 4)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 4;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 3)
+        if (_id < 4)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 3;
+        _id -= 4;
     }
     return _id;
 }
@@ -149,5 +158,11 @@ void PlotInteraction::moving(QPointF _t1)
 void PlotInteraction::leaved(bool _t1)
 {
     QMetaObject::activate<void>(this, &staticMetaObject, 2, nullptr, _t1);
+}
+
+// SIGNAL 3
+void PlotInteraction::wheel(QPointF _t1, int _t2)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 3, nullptr, _t1, _t2);
 }
 QT_WARNING_POP
