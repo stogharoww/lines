@@ -8,6 +8,7 @@
 #include <numpyc.h>
 #include <QPen>
 #include <algorithm>
+#include <Curve.h>
 
 /**
  * @brief PlotAPI::PlotAPI Инициализирует окно со всей отрисовкой
@@ -100,6 +101,20 @@ void PlotAPI::displayMainMenu()
                       QRectF(0, 0, rectWeight, rectHeight));
 */
 
+    const std::vector<Point3D> CONTROL_POINTS
+        {
+            {1, 1.2, 0},
+            {1.5, 1.39, 0},
+            {3, 1.5, 0},
+            {4.5, 1.39, 0},
+            {5, 1.2, 0}
+        };
+
+    const std::vector<double> WEIGHTS(CONTROL_POINTS.size(), 1);   // Весовые коэффициенты контрольных точек
+    const int CURVE_NUM_POINTS = 61;   // Кол-во точек, из которых будет состоять кривая
+    const int DEGREE = 2;   // Степень кривой
+
+    Curve originalCurve(CONTROL_POINTS, WEIGHTS, DEGREE, CURVE_NUM_POINTS);
 
     // === Парабола: x² на [-20, 9.5] ===
     NumpyC* npX1 = new NumpyC();

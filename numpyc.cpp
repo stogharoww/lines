@@ -52,6 +52,9 @@ NumpyC NumpyC::operator+(const NumpyC &other) const
 
     return NumpyC(result);
 }
+
+
+
 NumpyC NumpyC::operator-(const NumpyC &other) const
 {
     QVector<double> result;

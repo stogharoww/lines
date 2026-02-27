@@ -1,6 +1,8 @@
+release/CalcCurve.o
+release/Curve.o
+release/Point3d.o
 release/axisitem.o
 release/bottom.o
-release/followingcoords.o
 release/function.o
 release/legend.o
 release/main.o

@@ -4,7 +4,6 @@
 Bottom::Bottom(QString name, qreal w, qreal h, qreal ax, qreal ay)
 {
     //int id = QFontDatabase::addApplicationFont(":/textures/mttrrxx/Silver.ttf");
-
     //Silver = QFontDatabase::applicationFontFamilies(id).at(0);
 
     setAcceptHoverEvents(true);

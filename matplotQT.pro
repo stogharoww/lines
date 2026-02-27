@@ -16,6 +16,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    CalcCurve.cpp \
+    Curve.cpp \
+    Point3d.cpp \
     axisitem.cpp \
     bottom.cpp \
     function.cpp \
@@ -26,6 +29,10 @@ SOURCES += \
     plotinteraction.cpp
 
 HEADERS += \
+    CalcCurve.h \
+    Curve.h \
+    CurvePoint.h \
+    Point3d.h \
     axisitem.h \
     bottom.h \
     function.h \

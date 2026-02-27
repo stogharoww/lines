@@ -1,5 +1,4 @@
 #include "plotapi.h"
-
 #include <QApplication>
 #include <QDebug>
 
