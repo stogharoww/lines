@@ -1,4 +1,5 @@
 #include "Point3d.h"
+#include <math.h>
 
 Point3D Point3D::cross(const Point3D &iVector) const
 {
@@ -12,7 +13,7 @@ double Point3D::dot(const Point3D& iVector) const
 
 double Point3D::magnitude() const
 {
-    return std::sqrt(x * x + y * y + z * z);
+    return sqrt(x * x + y * y + z * z);
 }
 
 Point3D Point3D::operator+(const Point3D &other) const {

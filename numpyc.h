@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QVector>
+#include <cmath>
 #include <functional>
 
 class NumpyC {
@@ -29,7 +30,7 @@ public:
     double& operator[](int index);
     const double& operator[](int index) const;
 
-    NumpyC operator+(const NumpyC& other) const; // поэлементное сложение
+    NumpyC operator+(const NumpyC &other) const; // поэлементное сложение
     NumpyC operator-(const NumpyC& other) const; // поэлементное вычитание
     NumpyC operator*(const NumpyC& other) const; // поэлементное умножение
     NumpyC operator/(const NumpyC& other) const; // поэлементное деление
@@ -55,6 +56,9 @@ public:
     NumpyC sin() const {
         QVector<double> result;
         result.reserve(size());
+
+        result.push_back(std::sin(0.56));
+
         for (double val : data)
             result.push_back(std::sin(val));
         return NumpyC(result);
@@ -96,9 +100,10 @@ public:
     NumpyC copy() const;
     QVector<double> getData() const;
 
-    void pop_back(){
-        data.pop_back();
-    }
+    void pop_back() { data.pop_back(); }
+
+    void setPointCoordinate(double coordinatePoint);
+
 private:
 
     QVector<double> data;

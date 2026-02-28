@@ -111,88 +111,72 @@ void PlotAPI::displayMainMenu()
         };
 
     const std::vector<double> WEIGHTS(CONTROL_POINTS.size(), 1);   // Весовые коэффициенты контрольных точек
-    const int CURVE_NUM_POINTS = 61;   // Кол-во точек, из которых будет состоять кривая
+    const int CURVE_NUM_POINTS = 200; // Кол-во точек, из которых будет состоять кривая
     const int DEGREE = 2;   // Степень кривой
 
     Curve originalCurve(CONTROL_POINTS, WEIGHTS, DEGREE, CURVE_NUM_POINTS);
 
-    // === Парабола: x² на [-20, 9.5] ===
-    NumpyC* npX1 = new NumpyC();
-    npX1->arange(-20, 9.5, 800);
-    NumpyC* npY1 = new NumpyC(NumpyC::pow(*npX1, 2));
-    //NumpyC* npY1C = new NumpyC(NumpyC::sin(*npX1) * 50);
-    //*npY1 = *npY1 + *npY1C;
+    // Создаём объект в NumpyC в котором будут храниться координаты x, точек кривой originalCurve
+    NumpyC *npCurvePointsX = new NumpyC();
 
-    // === Синусоида: cos(x)*50 на [10.5, 50] ===
-    NumpyC* npX2 = new NumpyC();
-    npX2->arange(10.5, 50, 1000);
-    NumpyC* npY2 = new NumpyC(NumpyC::cos(*npX2) * 50);
+    // Создаём объект в NumpyC в котором будут храниться координаты y, точек кривой originalCurve
+    NumpyC *npCurvePointsY = new NumpyC();
 
-    // === Кубический сплайн на [9.5, 10.5] ===
-    double x0 = 9.5, x1 = 10.5;
-    double y0 = x0 * x0;                     // значение параболы
-    double y1 = std::cos(x1) * 50;           // значение синусоиды
-    double dy0 = 2 * x0;                     // производная параболы
-    double dy1 = -std::sin(x1) * 50;         // производная синусоиды
+    // Резервируем размеры
+    npCurvePointsX->getData().reserve(CURVE_NUM_POINTS);
+    npCurvePointsY->getData().reserve(CURVE_NUM_POINTS);
 
-    double h = x1 - x0;
-    double a = y0;
-    double b = dy0;
-    double c = (3*(y1 - y0)/h - 2*dy0 - dy1) / h;
-    double d = (2*(y0 - y1)/h + dy0 + dy1) / (h*h);
+    // Заполняем объект NumpcyC координтами x и y, кривой originalCurve
+    for (const auto &curvePoint : originalCurve.getCurvePoints()) {
+        npCurvePointsX->setPointCoordinate(curvePoint.x);
+        npCurvePointsY->setPointCoordinate(curvePoint.y);
+    }
 
-    // === Генерация X и Y по сплайну ===
-    NumpyC blendX;
-    blendX.arange(x0, x1, 200);
-    NumpyC blendY = blendX.map([=](double x) {
-        double dx = x - x0;
-        return a + b*dx + c*dx*dx + d*dx*dx*dx;
-    });
+    // Создаём объект в NumpyC в котором будут храниться координаты x, контрольных точек кривой originalCurve
+    NumpyC *npControlPoitnsX = new NumpyC();
 
-    // === Объединение всех участков ===
-    NumpyC npXres = npX1->copy();
-    npXres.push_back(blendX);
-    npXres.push_back(*npX2);
+    // Создаём объект в NumpyC в котором будут храниться координаты y, контрольных точек кривой originalCurve
+    NumpyC *npControlPoitnsY = new NumpyC();
 
-    NumpyC npYres = npY1->copy();
-    npYres.push_back(blendY);
-    npYres.push_back(*npY2);
+    // Резервируем размеры
+    npControlPoitnsX->getData().reserve(CONTROL_POINTS.size());
+    npControlPoitnsY->getData().reserve(CONTROL_POINTS.size());
+
+    // Заполняем объект NumpcyC координтами x и y, кривой originalCurve
+    for (const auto &controlPoint : originalCurve.getControlPoints()) {
+        npCurvePointsX->setPointCoordinate(controlPoint.x);
+        npCurvePointsY->setPointCoordinate(controlPoint.y);
+    }
 
     // === Вычисление логических границ ===
     double minX, maxX, minY, maxY;
 
-    if (_minX == _maxX){ // 1 запуск с инициализацией _logicalRect
+    if (_minX == _maxX) { // 1 запуск с инициализацией _logicalRect
 
-        minX = npXres.min();
-        maxX = npXres.max();
-        minY = std::floor(npYres.min() / 100.0) * 100.0;
-        maxY = std::ceil(npYres.max() / 100.0) * 100.0;
+        minX = npCurvePointsX->min();
+        maxX = npCurvePointsX->max();
+        minY = npCurvePointsY->min();
+        maxY = npCurvePointsY->max();
 
         _logicalRect = QRectF(minX, minY, maxX - minX, maxY - minY);
         _baseRect = _logicalRect;
         setMinMaxXY(minX, minY, maxX, maxY);
 
-    }
-    else {
+    } else {
         // используем уже существующий _logicalRect
         minX = _logicalRect.left();
         maxX = _logicalRect.right();
         minY = _logicalRect.top();
         maxY = _logicalRect.bottom();
     }
+
     // === Отрисовка ===
-    func = new Function(npXres, npYres);
+    func = new Function(*npCurvePointsX, *npCurvePointsY);
+
     //func->setHeight(rectWeight, rectHeight); //смещение наверх и прочее
-
-
-
     _pixelRect = QRectF(0, 0, rectWeight, rectHeight);
+
     func->setViewport(_logicalRect, _pixelRect);
-
-
-
-
-
 
     //double scaleX = rectWeight / (maxX - minX);
     //double scaleY = rectHeight / (maxY - minY);
@@ -200,9 +184,22 @@ void PlotAPI::displayMainMenu()
     //func->setScale(scaleX, -scaleY); // инверсия Y
     //func->setOffset(0, rectHeight);  // смещение вверх
 
-
-
     func->setParentItem(_rect);
+
+    func2 = new Function(*npControlPoitnsX, *npControlPoitnsY);
+
+    //func->setHeight(rectWeight, rectHeight); //смещение наверх и прочее
+    _pixelRect = QRectF(0, 0, rectWeight, rectHeight);
+
+    func2->setViewport(_logicalRect, _pixelRect);
+
+    //double scaleX = rectWeight / (maxX - minX);
+    //double scaleY = rectHeight / (maxY - minY);
+    //func->setMins(minX, minY);
+    //func->setScale(scaleX, -scaleY); // инверсия Y
+    //func->setOffset(0, rectHeight);  // смещение вверх
+
+    func2->setParentItem(_rect);
 
     //оси:
     double x, y;
@@ -214,7 +211,7 @@ void PlotAPI::displayMainMenu()
     axies->setSize(rectWeight, rectHeight); // физический размер
     axies->setLogicalRange(minX, maxX, minY, maxY);    // логический диапазон
     axies->setNameX("Ось Х", "Ось Y");
-    axies->setNameGraph("Парабола и потом синус");
+    axies->setNameGraph("Кривая и контрольные точки");
     scene->addItem(axies);
     axies->setPos(x, y);
     _rect->setBrush(brush);
@@ -222,15 +219,22 @@ void PlotAPI::displayMainMenu()
 
     setMinMaxXY(minX, minY, maxX, maxY);
 
-
     graphRect = QRectF(x, y, rectWeight, rectHeight);
 
     scene->addItem(_rect);
-    QString firstBtm = "Bottom кнопка";
-    Bottom *testBottom = new Bottom("", 40, 40);
-    testBottom->setPuxmap("://res/icons8-home-30.png");
-    scene->addItem(testBottom);
-    connect(testBottom, &Bottom::clicked, this, &PlotAPI::bottomClicked);
+
+    /*Bottom *homeBottom = new Bottom("", 40, 40);
+    homeBottom->setPuxmap("://res/icons8-home-30.png");
+    scene->addItem(homeBottom);
+    connect(homeBottom, &Bottom::clicked, this, &PlotAPI::homeBottomClicked);*/
+
+    Bottom *showHideControlLinesBottom = new Bottom("", 40, 40);
+    showHideControlLinesBottom->setPuxmap("://res/controlLinesIcon.png");
+    scene->addItem(showHideControlLinesBottom);
+    connect(showHideControlLinesBottom,
+            &Bottom::clicked,
+            this,
+            &PlotAPI::onShowHideControlLinesBottomClicked);
 
     interaction = new PlotInteraction(graphRect);
     interaction->setZValue(105);
@@ -261,8 +265,8 @@ void PlotAPI::moveEvent(QPointF delta)
 
     _minX += dx;
     _maxX += dx;
-    _minY += dy;;
-    _maxY += dy;;
+    _minY += dy;
+    _maxY += dy;
 
     _logicalRect.setRect(_minX, _minY, _maxX - _minX, _maxY - _minY);
     //_logicalRect = logWheelRect(_logicalRect);
@@ -422,8 +426,8 @@ QRectF PlotAPI::logWheelRect(QRectF logicalRect)
     return newRect;
 }
 
-
-void PlotAPI::bottomClicked(){
+void PlotAPI::homeBottomClicked()
+{
     /*
     resize(800, 400);
     //возвращаем график к точке 0:0
@@ -443,7 +447,6 @@ void PlotAPI::bottomClicked(){
 
     scene->update();
 */
-
     resize(800, 400);
     scene->clear();
 
@@ -453,11 +456,20 @@ void PlotAPI::bottomClicked(){
     flagWheel = 0;
 
     displayMainMenu();
-
-
 }
 
+void PlotAPI::onShowHideControlLinesBottomClicked()
+{
+    _hasShowControlLines = !_hasShowControlLines;
 
+    if (_hasShowControlLines) {
+        func2->show();
+    } else {
+        func2->hide();
+    }
+
+    scene->update();
+}
 
 /*
 void PlotAPI::mousePressEvent(QMouseEvent *event)

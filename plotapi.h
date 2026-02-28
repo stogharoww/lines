@@ -40,15 +40,16 @@ public:
     void setMinMaxXY(double minX, double minY, double maxX, double maxY);
 
 public slots:
-    void bottomClicked();
+    void homeBottomClicked();
+    void onShowHideControlLinesBottomClicked();
     void moveEvent(QPointF delta);
     void movingMouse(QPointF pos);
     void leaved(bool leav);
     void wheel(QPointF localPos, int delta);
 
 private:
-
     //void centratePlot();
+    bool _hasShowControlLines = true;
     QGraphicsView *view;
     QGraphicsScene *scene;
     int weight;
@@ -62,6 +63,7 @@ private:
     double rectWeight;
     double rectHeight;
     Function* func;
+    Function *func2;
     AxisItem *axies;
     QRectF graphRect;
     PlotInteraction *interaction;

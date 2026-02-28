@@ -248,6 +248,11 @@ NumpyC NumpyC::linspace(double start, double stop, int num)
     return NumpyC(result);
 }
 
+void NumpyC::setPointCoordinate(double coordinatePoint)
+{
+    data.push_back(coordinatePoint);
+}
+
 // функции и фильтр
 NumpyC NumpyC::map(std::function<double (double)> func) const
 {

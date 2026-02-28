@@ -33,6 +33,4 @@ private:
     void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
     void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
     QGraphicsTextItem *text;
-
 };
-
