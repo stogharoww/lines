@@ -1,0 +1,4 @@
+"build/" 
+"*.pro.user" 
+"*.user" 
+".qtc_clangd/" 
