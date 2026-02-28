@@ -6,6 +6,7 @@
 class Curve
 {
 public:
+    Curve();
     Curve(const std::vector<Point3D> &controlPoints, const std::vector<double> &weights, int degree, int curveNumPoints) noexcept;
 
     void calcCurve(); // Рассчитывает точки кривой

@@ -96,6 +96,8 @@ public:
     NumpyC copy() const;
     QVector<double> getData() const;
 
+    void reserve(int size);
+
     void pop_back(){
         data.pop_back();
     }

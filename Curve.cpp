@@ -2,6 +2,8 @@
 #include <QDebug>
 #include "CalcCurve.h"
 
+Curve::Curve() {}
+
 Curve::Curve(const std::vector<Point3D> &controlPoints, const std::vector<double> &weights, int degree, int curveNumPoints) noexcept
     : _controlPoints {controlPoints}, _weights { weights }, _numRealRangePoints { curveNumPoints }, _degree { degree }
 {

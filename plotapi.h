@@ -9,7 +9,7 @@
 #include <QRectF>
 #include "plotinteraction.h"
 #include <QPointF>
-
+#include "generator.h"
 
 
 
@@ -61,7 +61,7 @@ private:
     double _maxY = 0;
     double rectWeight;
     double rectHeight;
-    Function* func;
+    //Function* func;
     AxisItem *axies;
     QRectF graphRect;
     PlotInteraction *interaction;
@@ -82,7 +82,7 @@ private:
     QRectF _logicalRect;
     QRectF _pixelRect;
 
-
+    Generator *_generator = nullptr;
 
     double _factor = 1;
 

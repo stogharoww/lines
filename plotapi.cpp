@@ -10,6 +10,8 @@
 #include <algorithm>
 #include <Curve.h>
 
+
+
 /**
  * @brief PlotAPI::PlotAPI Инициализирует окно со всей отрисовкой
  */
@@ -21,6 +23,17 @@ PlotAPI::PlotAPI()
 
     resize(800, 400);
     setScene(scene);
+
+    //тёмная тема приложения
+    setStyleSheet(R"(
+        QGraphicsView {
+            background-color: #1e1e1e;
+            color: #dddddd;
+            border: none;
+        }
+    )");
+
+
 
     //получить размеры видимой области:
     QSize size = viewport()->size();
@@ -101,6 +114,9 @@ void PlotAPI::displayMainMenu()
                       QRectF(0, 0, rectWeight, rectHeight));
 */
 
+
+
+    /*
     const std::vector<Point3D> CONTROL_POINTS
         {
             {1, 1.2, 0},
@@ -204,17 +220,73 @@ void PlotAPI::displayMainMenu()
 
     func->setParentItem(_rect);
 
-    //оси:
+
+    */
+
+    // отрисовка функций
     double x, y;
     x = (weight - rectWeight) / 2;
     y = (height - rectHeight) / 2;
     _rect->setPos(x, y);
+
+    QVector<Point3D> CONTROL_POINTS
+        {
+            {1, 1.2, 0},
+            {1.5, 1.39, 0},
+            {3, 1.5, 0},
+            {4.5, 1.39, 0},
+            {5, 1.2, 0}
+        };
+
+    if (_generator) delete _generator;
+    _generator = new Generator();
+    _generator->setControlPoints(CONTROL_POINTS);
+
+    _pixelRect = QRectF(0, 0, rectWeight, rectHeight);
+
+
+    // вычисление логических координат
+    qreal minX, maxX, minY, maxY;
+
+
+    if (_minX == _maxX){
+
+        _logicalRect = _generator->logicalRectPls();
+        minX = _logicalRect.left();
+        maxX = _logicalRect.right();
+        minY = _logicalRect.top();
+        maxY = _logicalRect.bottom();
+        setMinMaxXY(minX, minY, maxX, maxY);
+        _baseRect = _logicalRect;
+
+
+    }
+    else{
+        minX = _logicalRect.left();
+        maxX = _logicalRect.right();
+        minY = _logicalRect.top();
+        maxY = _logicalRect.bottom();
+    }
+
+    _generator->setViewport(_logicalRect, _pixelRect);
+    _generator->run();
+
+    for (const auto& f : _generator->getFunc()){
+        f->setParentItem(_rect);
+        //scene->addItem(f);
+    }
+
+
+
+
+    //оси:
+
     axies = new AxisItem(rectWeight, rectHeight);
     axies->setZValue(2); //наложение поверх всего
     axies->setSize(rectWeight, rectHeight); // физический размер
     axies->setLogicalRange(minX, maxX, minY, maxY);    // логический диапазон
     axies->setNameX("Ось Х", "Ось Y");
-    axies->setNameGraph("Парабола и потом синус");
+    axies->setNameGraph("График контрольных точек");
     scene->addItem(axies);
     axies->setPos(x, y);
     _rect->setBrush(brush);
@@ -266,8 +338,7 @@ void PlotAPI::moveEvent(QPointF delta)
 
     _logicalRect.setRect(_minX, _minY, _maxX - _minX, _maxY - _minY);
     //_logicalRect = logWheelRect(_logicalRect);
-    func->setViewport(_logicalRect,
-                      _pixelRect);
+    _generator->setViewport(_logicalRect, _pixelRect);
 
 
     axies->moveAxies(dx, dy);
@@ -305,8 +376,11 @@ void PlotAPI::movingMouse(QPointF pos)
 
 
     //текст
-    QPointF posInFunc = func->mapFromScene(interaction->mapToScene(pos));
-    QPointF logicalPos = func->pixelToLogical(posInFunc);
+    auto funcs = _generator->getFunc();
+    if (funcs.isEmpty()) return;
+    Function* mainFunc = funcs[0];
+    QPointF posInFunc = _rect->mapFromScene(interaction->mapToScene(pos));
+    QPointF logicalPos = mainFunc->pixelToLogical(posInFunc);
     QString text = QString("x: %1, y: %2")
                        .arg(logicalPos.x(), 0, 'f', 2)
                        .arg(logicalPos.y(), 0, 'f', 2);
@@ -345,9 +419,12 @@ void PlotAPI::wheel(QPointF localPos, int delta)
     _factor = std::min(_factor, 2.0);
     qDebug() << _factor;
 
+    auto funcs = _generator->getFunc();
+    if (funcs.isEmpty()) return;
+    Function* mainFunc = funcs[0];
     QPointF scenePos = interaction->mapToScene(localPos);
-    QPointF posInFunc = func->mapFromScene(scenePos);
-    QPointF logicalPos = func->pixelToLogical(posInFunc);
+    QPointF posInFunc = _rect->mapFromScene(scenePos);
+    QPointF logicalPos = mainFunc->pixelToLogical(posInFunc);
 
     QRectF r = _logicalRect;
 
@@ -363,8 +440,8 @@ void PlotAPI::wheel(QPointF localPos, int delta)
     double newLeft = logicalPos.x() - newW * kx;
     double newTop = logicalPos.y() - newH * ky;
     QRectF newRect = QRectF(newLeft, newTop, newW, newH);
-    if (newRect.width() < 10) return;
-    if (newRect.height() < 10) return;
+    //if (newRect.width() < 10) return;
+    //if (newRect.height() < 10) return;
 
     _logicalRect = newRect;
 
@@ -386,7 +463,7 @@ void PlotAPI::wheel(QPointF localPos, int delta)
     _maxY = _logicalRect.bottom();
 
 
-    func->setViewport(_logicalRect, _pixelRect);
+    _generator->setViewport(_logicalRect, _pixelRect);
 
     // применяем масштабирование на оси
     axies->setLogicalRange(_logicalRect.left(), _logicalRect.right(), _logicalRect.top(), _logicalRect.bottom());
@@ -544,7 +621,7 @@ void PlotAPI::refresh()
     scene->setSceneRect(0, 0, weight, height);
     displayMainMenu();
     //_logicalRect = logWheelRect(_logicalRect);
-    func->setViewport(_logicalRect, _pixelRect);
+    //_generator->setViewport(_logicalRect, _pixelRect);
     axies->setLogicalRange(_logicalRect.left(), _logicalRect.right(),
                            _logicalRect.top(), _logicalRect.bottom());
     scene->update();

@@ -77,6 +77,8 @@ void Function::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget
     QPen pen(Qt::blue, 2);
     painter->setPen(pen);
 
+    const int SEGMENTS = 200;
+
     for (int i = 1; i < _points.size(); ++i) {
         if (_pixelRect.contains(_points[i]))
             painter->drawLine(_points[i - 1], _points[i]);

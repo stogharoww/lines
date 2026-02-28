@@ -33,6 +33,11 @@ QVector<double> NumpyC::getData() const
     return data;
 }
 
+void NumpyC::reserve(int size)
+{
+    data.reserve(size);
+}
+
 // массив + массив
 NumpyC NumpyC::operator+(const NumpyC &other) const
 {

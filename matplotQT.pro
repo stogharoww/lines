@@ -22,6 +22,7 @@ SOURCES += \
     axisitem.cpp \
     bottom.cpp \
     function.cpp \
+    generator.cpp \
     legend.cpp \
     main.cpp \
     numpyc.cpp \
@@ -36,6 +37,7 @@ HEADERS += \
     axisitem.h \
     bottom.h \
     function.h \
+    generator.h \
     legend.h \
     numpyc.h \
     plotapi.h \
