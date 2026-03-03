@@ -54,6 +54,9 @@ public:
 
 
 
+
+
+
     // возвращает все функции в генераторе
     const QVector<Function*>& getFunc();
 

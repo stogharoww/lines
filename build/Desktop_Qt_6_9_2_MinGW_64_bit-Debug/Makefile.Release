@@ -150,9 +150,12 @@ compiler_rcc_clean:
 release/qrc_res.cpp: ../../res.qrc \
 		../../../../Qt6/6.9.2/mingw_64/bin/rcc.exe \
 		../../res/icons8-home-256.png \
+		../../res/point.png \
 		../../res/icons8-home-16.png \
+		../../res/punktire.png \
 		../../res/icons8-home-30.png \
-		../../res/icons8-home-64.png
+		../../res/icons8-home-64.png \
+		../../res/line.png
 	D:\Qt\Qt6\6.9.2\mingw_64\bin\rcc.exe -name res --no-zstd ..\..\res.qrc -o release\qrc_res.cpp
 
 compiler_moc_predefs_make_all: release/moc_predefs.h

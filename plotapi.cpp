@@ -297,16 +297,45 @@ void PlotAPI::displayMainMenu()
 
     graphRect = QRectF(x, y, rectWeight, rectHeight);
 
-    scene->addItem(_rect);
-    QString firstBtm = "Bottom кнопка";
-    Bottom *testBottom = new Bottom("", 40, 40);
-    testBottom->setPuxmap("://res/icons8-home-30.png");
-    scene->addItem(testBottom);
-    connect(testBottom, &Bottom::clicked, this, &PlotAPI::bottomClicked);
 
+    scene->addItem(_rect);
+    // кнопочки
+    //QString firstBtm = "Bottom кнопка";
+
+    //home:
+    Bottom *homeBtm = new Bottom("", 40, 40);
+    homeBtm->setPuxmap("://res/icons8-home-30.png");
+    scene->addItem(homeBtm);
+    connect(homeBtm, &Bottom::clicked, this, &PlotAPI::bottomHomeClicked);
+
+    // скрыть / показать пунктир
+    punktireBtm = new Bottom("", 40, 40);
+    punktireBtm->setPos(40, 0);
+    punktireBtm->setPuxmap("://res/punktire.png");
+    scene->addItem(punktireBtm);
+    connect(punktireBtm, &Bottom::clicked, this, &PlotAPI::btmPunktireClicked);
+
+    // скрыть / показать точки
+    pointsBtm = new Bottom("", 40, 40);
+    pointsBtm->setPos(0, 40);
+    pointsBtm->setPuxmap("://res/point.png");
+    scene->addItem(pointsBtm);
+    connect(pointsBtm, &Bottom::clicked, this, &PlotAPI::btmPointClicked);
+
+    // скрыть / показать функцию
+    lineBtm = new Bottom("", 40, 40);
+    lineBtm->setPos(40, 40);
+    lineBtm->setPuxmap("://res/line.png");
+    scene->addItem(lineBtm);
+    connect(lineBtm, &Bottom::clicked, this, &PlotAPI::btmLineClicked);
+
+
+    // интерактив
     interaction = new PlotInteraction(graphRect);
     interaction->setZValue(105);
     scene->addItem(interaction);
+
+
 
     connect(interaction, &PlotInteraction::requested, this, &PlotAPI::moveEvent);
 
@@ -474,6 +503,45 @@ void PlotAPI::wheel(QPointF localPos, int delta)
 
 }
 
+void PlotAPI::btmPunktireClicked()
+{
+    changeBtmColor(fPunktire, *punktireBtm);
+    if (fPunktire)
+        _generator->getFunc()[1]->setVisible(false);
+    else if (!fPunktire){
+        _generator->getFunc()[1]->setVisible(true);
+    }
+
+    fPunktire = !fPunktire;
+}
+
+void PlotAPI::btmPointClicked()
+{
+    changeBtmColor(fPoint, *pointsBtm);
+
+    if (fPoint)
+        _generator->getFunc()[2]->setVisible(false);
+    else if (!fPoint){
+        _generator->getFunc()[2]->setVisible(true);
+    }
+
+
+    fPoint = !fPoint;
+}
+
+void PlotAPI::btmLineClicked()
+{
+    changeBtmColor(fLine, *lineBtm);
+
+    if (fLine)
+        _generator->getFunc()[0]->setVisible(false);
+    else if (!fLine){
+        _generator->getFunc()[0]->setVisible(true);
+    }
+
+    fLine = !fLine;
+}
+
 void PlotAPI::backToHomeXY()
 {
     _minX = _start_minX;
@@ -485,6 +553,15 @@ void PlotAPI::backToHomeXY()
 void PlotAPI::functionAndMove()
 {
 
+}
+
+void PlotAPI::changeBtmColor(bool flag, Bottom &btm)
+{
+    if (flag){
+        btm.setColor(Qt::gray);
+    } else if (!flag){
+        btm.setColor(Qt::darkCyan);
+    }
 }
 
 QRectF PlotAPI::logWheelRect(QRectF logicalRect)
@@ -500,7 +577,7 @@ QRectF PlotAPI::logWheelRect(QRectF logicalRect)
 }
 
 
-void PlotAPI::bottomClicked(){
+void PlotAPI::bottomHomeClicked(){
     /*
     resize(800, 400);
     //возвращаем график к точке 0:0
@@ -523,7 +600,9 @@ void PlotAPI::bottomClicked(){
 
     resize(800, 400);
     scene->clear();
-
+    fPoint = true;
+    fLine = true;
+    fPunktire = true;
     _minX = 0;
     _maxX = 0;
     _factor = 1;

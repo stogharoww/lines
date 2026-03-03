@@ -2,16 +2,16 @@
 #include <QDebug>
 
 Generator::Generator() :
-    _logicalRect(0, 0, 1, 1),
-    _pixelRect(0, 0, 1, 1),
     _npCurvePointsX(nullptr),
     _npCurvePointsY(nullptr),
     _npControlPointsX(nullptr),
     _npControlPointsY(nullptr),
-    _funcCurve(nullptr),
-    _funcControl(nullptr),
     _npPunctirePointsX(nullptr),
-    _npPunctirePointsY(nullptr)
+    _npPunctirePointsY(nullptr),
+    _logicalRect(0, 0, 1, 1),
+    _pixelRect(0, 0, 1, 1),
+    _funcCurve(nullptr),
+    _funcControl(nullptr)
 {
 }
 
@@ -269,20 +269,20 @@ void Generator::buildFunctions()
 
 
     _funcCurve = new Function(*_npCurvePointsX, *_npCurvePointsY);
-    _funcControl = new Function(*_npControlPointsX, *_npControlPointsY);
     _funcPunktire = new Function(*_npPunctirePointsX, *_npPunctirePointsY);
+    _funcControl = new Function(*_npControlPointsX, *_npControlPointsY);
 
     addFunc(_funcCurve);
-    addFunc(_funcControl);
     addFunc(_funcPunktire);
+    addFunc(_funcControl);
 
     for (auto &f : _allFunc){
         f->setViewport(_logicalRect, _pixelRect);
     }
 
 
-    _funcControl->pointed();
     _funcPunktire->punctire();
+    _funcControl->pointed();
 
 }
 

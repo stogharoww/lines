@@ -4,5 +4,8 @@
         <file>res/icons8-home-64.png</file>
         <file>res/icons8-home-16.png</file>
         <file>res/icons8-home-30.png</file>
+        <file>res/punktire.png</file>
+        <file>res/point.png</file>
+        <file>res/line.png</file>
     </qresource>
 </RCC>

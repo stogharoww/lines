@@ -39,7 +39,7 @@ template <> constexpr inline auto PlotAPI::qt_create_metaobjectdata<qt_meta_tag_
     namespace QMC = QtMocConstants;
     QtMocHelpers::StringRefStorage qt_stringData {
         "PlotAPI",
-        "bottomClicked",
+        "bottomHomeClicked",
         "",
         "moveEvent",
         "delta",
@@ -48,11 +48,14 @@ template <> constexpr inline auto PlotAPI::qt_create_metaobjectdata<qt_meta_tag_
         "leaved",
         "leav",
         "wheel",
-        "localPos"
+        "localPos",
+        "btmPunktireClicked",
+        "btmPointClicked",
+        "btmLineClicked"
     };
 
     QtMocHelpers::UintData qt_methods {
-        // Slot 'bottomClicked'
+        // Slot 'bottomHomeClicked'
         QtMocHelpers::SlotData<void()>(1, 2, QMC::AccessPublic, QMetaType::Void),
         // Slot 'moveEvent'
         QtMocHelpers::SlotData<void(QPointF)>(3, 2, QMC::AccessPublic, QMetaType::Void, {{
@@ -70,6 +73,12 @@ template <> constexpr inline auto PlotAPI::qt_create_metaobjectdata<qt_meta_tag_
         QtMocHelpers::SlotData<void(QPointF, int)>(9, 2, QMC::AccessPublic, QMetaType::Void, {{
             { QMetaType::QPointF, 10 }, { QMetaType::Int, 4 },
         }}),
+        // Slot 'btmPunktireClicked'
+        QtMocHelpers::SlotData<void()>(11, 2, QMC::AccessPublic, QMetaType::Void),
+        // Slot 'btmPointClicked'
+        QtMocHelpers::SlotData<void()>(12, 2, QMC::AccessPublic, QMetaType::Void),
+        // Slot 'btmLineClicked'
+        QtMocHelpers::SlotData<void()>(13, 2, QMC::AccessPublic, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -93,11 +102,14 @@ void PlotAPI::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
     auto *_t = static_cast<PlotAPI *>(_o);
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
-        case 0: _t->bottomClicked(); break;
+        case 0: _t->bottomHomeClicked(); break;
         case 1: _t->moveEvent((*reinterpret_cast< std::add_pointer_t<QPointF>>(_a[1]))); break;
         case 2: _t->movingMouse((*reinterpret_cast< std::add_pointer_t<QPointF>>(_a[1]))); break;
         case 3: _t->leaved((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
         case 4: _t->wheel((*reinterpret_cast< std::add_pointer_t<QPointF>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
+        case 5: _t->btmPunktireClicked(); break;
+        case 6: _t->btmPointClicked(); break;
+        case 7: _t->btmLineClicked(); break;
         default: ;
         }
     }
@@ -122,14 +134,14 @@ int PlotAPI::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 5)
+        if (_id < 8)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 5;
+        _id -= 8;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 5)
+        if (_id < 8)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 5;
+        _id -= 8;
     }
     return _id;
 }

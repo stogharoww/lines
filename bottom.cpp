@@ -11,10 +11,8 @@ Bottom::Bottom(QString name, qreal w, qreal h, qreal ax, qreal ay)
 
     //draw the rect
     setRect(ax,ay,w,h);
-    QBrush brush;
     brush.setStyle(Qt::SolidPattern);
-    brush.setColor(Qt::darkCyan);
-    setBrush(brush);
+    setColor(_color);
 
     //draw the text
     text = new QGraphicsTextItem(name, this);
@@ -31,18 +29,28 @@ Bottom::Bottom(QString name, qreal w, qreal h, qreal ax, qreal ay)
 void Bottom::setPuxmap(QString data)
 {
     QPixmap original(data);
+
     QSizeF targetSize = rect().size();
-    QPixmap scaled = original.scaled(targetSize.toSize(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    QGraphicsPixmapItem *pixmapItem = new QGraphicsPixmapItem(original, this);
-    qreal xOffset = rect().width()/2 - original.width()/2;
-    qreal yOffset = rect().height()/2 - original.height()/2;
+    QPixmap scaled = original.scaled(30, 30, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QGraphicsPixmapItem *pixmapItem = new QGraphicsPixmapItem(scaled, this);
+    qreal xOffset = rect().width()/2 - scaled.width()/2;
+    qreal yOffset = rect().height()/2 - scaled.height()/2;
 
     pixmapItem->setPos(xOffset, yOffset);
+}
+
+void Bottom::setColor(QColor col)
+{
+    _color = col;
+    brush.setColor(_color);
+    setBrush(brush);
 }
 
 void Bottom::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     event->accept();
+    brush.setColor(_color);
+    setBrush(brush);
     emit clicked();
 
 }
@@ -51,9 +59,7 @@ void Bottom::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     event->accept();
     //change color to cyan
-    QBrush brush;
-    brush.setStyle(Qt::SolidPattern);
-    brush.setColor(Qt::cyan);
+    brush.setColor(_color.lighter(150));
     setBrush(brush);
 }
 
@@ -61,8 +67,6 @@ void Bottom::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     event->accept();
     //change color to dark cyan
-    QBrush brush;
-    brush.setStyle(Qt::SolidPattern);
-    brush.setColor(Qt::darkCyan);
+    brush.setColor(_color);
     setBrush(brush);
 }

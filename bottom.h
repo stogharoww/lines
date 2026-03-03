@@ -24,6 +24,7 @@ public:
      * @param data путь до картинки
      */
     void setPuxmap(QString data);
+    void setColor(QColor col);
 
 signals:
     void clicked();
@@ -33,6 +34,7 @@ private:
     void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
     void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
     QGraphicsTextItem *text;
-
+    QColor _color = QColor(Qt::darkCyan);
+    QBrush brush;
 };
 

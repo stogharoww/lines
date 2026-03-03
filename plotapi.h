@@ -10,6 +10,7 @@
 #include "plotinteraction.h"
 #include <QPointF>
 #include "generator.h"
+#include "bottom.h"
 
 
 
@@ -40,11 +41,14 @@ public:
     void setMinMaxXY(double minX, double minY, double maxX, double maxY);
 
 public slots:
-    void bottomClicked();
+    void bottomHomeClicked();
     void moveEvent(QPointF delta);
     void movingMouse(QPointF pos);
     void leaved(bool leav);
     void wheel(QPointF localPos, int delta);
+    void btmPunktireClicked();
+    void btmPointClicked();
+    void btmLineClicked();
 
 private:
 
@@ -77,6 +81,16 @@ private:
     void backToHomeXY();
 
     void functionAndMove();
+
+    bool fPoint = true;
+    bool fLine = true;
+    bool fPunktire = true;
+
+    //bottoms
+    Bottom *punktireBtm;
+    Bottom *pointsBtm;
+    Bottom *lineBtm;
+    void changeBtmColor(bool flag, Bottom &btm);
 
 
     QRectF _logicalRect;
