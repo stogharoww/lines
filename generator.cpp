@@ -118,6 +118,11 @@ void Generator::removeControlPoints(const QPointF &point, double r)
     return;
 }
 
+void Generator::removeAll()
+{
+    _CONTROL_POINTS.clear();
+}
+
 void Generator::setWeights(const QVector<double> &w)
 {
     if (w.size() != _WEIGHTS.size()){
@@ -200,6 +205,11 @@ void Generator::rebuild()
     fillControlNumpy();
     fillPunctireNumpy();
     buildFunctions();
+}
+
+QVector<Point3D> Generator::getControlPoints()
+{
+    return _CONTROL_POINTS;
 }
 
 void Generator::getGraphicDiapasone(qreal &minX, qreal &maxX, qreal &minY, qreal &maxY)

@@ -53,6 +53,7 @@ template <> constexpr inline auto PlotAPI::qt_create_metaobjectdata<qt_meta_tag_
         "btmPointClicked",
         "btmLineClicked",
         "btmAddingPoints",
+        "btmCleanAll",
         "editPoints",
         "Qt::MouseButton",
         "button",
@@ -86,12 +87,14 @@ template <> constexpr inline auto PlotAPI::qt_create_metaobjectdata<qt_meta_tag_
         QtMocHelpers::SlotData<void()>(13, 2, QMC::AccessPublic, QMetaType::Void),
         // Slot 'btmAddingPoints'
         QtMocHelpers::SlotData<void()>(14, 2, QMC::AccessPublic, QMetaType::Void),
+        // Slot 'btmCleanAll'
+        QtMocHelpers::SlotData<void()>(15, 2, QMC::AccessPublic, QMetaType::Void),
         // Slot 'editPoints'
-        QtMocHelpers::SlotData<void(QPointF, Qt::MouseButton)>(15, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::QPointF, 6 }, { 0x80000000 | 16, 17 },
+        QtMocHelpers::SlotData<void(QPointF, Qt::MouseButton)>(16, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QPointF, 6 }, { 0x80000000 | 17, 18 },
         }}),
         // Slot 'emptyFuncs'
-        QtMocHelpers::SlotData<void()>(18, 2, QMC::AccessPublic, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(19, 2, QMC::AccessPublic, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -124,8 +127,9 @@ void PlotAPI::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         case 6: _t->btmPointClicked(); break;
         case 7: _t->btmLineClicked(); break;
         case 8: _t->btmAddingPoints(); break;
-        case 9: _t->editPoints((*reinterpret_cast< std::add_pointer_t<QPointF>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<Qt::MouseButton>>(_a[2]))); break;
-        case 10: _t->emptyFuncs(); break;
+        case 9: _t->btmCleanAll(); break;
+        case 10: _t->editPoints((*reinterpret_cast< std::add_pointer_t<QPointF>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<Qt::MouseButton>>(_a[2]))); break;
+        case 11: _t->emptyFuncs(); break;
         default: ;
         }
     }
@@ -150,14 +154,14 @@ int PlotAPI::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 11)
+        if (_id < 12)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 11;
+        _id -= 12;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 11)
+        if (_id < 12)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 11;
+        _id -= 12;
     }
     return _id;
 }

@@ -50,6 +50,7 @@ public slots:
     void btmPointClicked();
     void btmLineClicked();
     void btmAddingPoints();
+    void btmCleanAll();
     // редактирование точек
     void editPoints(QPointF pos, Qt::MouseButton button);
     void emptyFuncs();
@@ -95,9 +96,10 @@ private:
     Bottom *punktireBtm;
     Bottom *pointsBtm;
     Bottom *lineBtm;
-    Bottom *cleanAll;
+    Bottom *cleanAllBtm;
     void changeBtmColor(bool flag, Bottom &btm, QColor col = QColor(Qt::gray));
     void changeVisible(bool flag, int index);
+    void applyButtonStates();
 
     Bottom *addingPointsBtm;
 
@@ -113,6 +115,15 @@ private:
 
 
     QRectF logWheelRect(QRectF logicalRect);
+
+    QVector<Point3D> CONTROL_POINTS
+        {
+            {1, 1.2, 0},
+            {1.5, 1.39, 0},
+            {3, 1.5, 0},
+            {4.5, 1.39, 0},
+            {5, 1.2, 0}
+        };
 
 
 };

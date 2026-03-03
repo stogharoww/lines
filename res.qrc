@@ -8,5 +8,6 @@
         <file>res/point.png</file>
         <file>res/line.png</file>
         <file>res/edit.png</file>
+        <file>res/cleanAll.png</file>
     </qresource>
 </RCC>

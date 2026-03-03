@@ -36,6 +36,7 @@ public:
     void addControlPoints(const QVector<QPointF>& pts);
 
     void removeControlPoints(const QPointF& point, double r);
+    void removeAll();
 
     // устанавливаем веса
     void setWeights(const QVector<double>& w);
@@ -73,7 +74,7 @@ public:
     void rebuild();
 
     // возвращает контрольные точки
-    QVector<QPointF> getControlPoints();
+    QVector<Point3D> getControlPoints();
 
 
     // возвращает логический диапазон из функций

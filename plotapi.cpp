@@ -88,14 +88,6 @@ void PlotAPI::displayMainMenu()
     y = (height - rectHeight) / 2;
     _rect->setPos(x, y);
 
-    QVector<Point3D> CONTROL_POINTS
-        {
-            {1, 1.2, 0},
-            {1.5, 1.39, 0},
-            {3, 1.5, 0},
-            {4.5, 1.39, 0},
-            {5, 1.2, 0}
-        };
 
     if (_generator) delete _generator;
     _generator = new Generator();
@@ -193,7 +185,11 @@ void PlotAPI::displayMainMenu()
     connect(addingPointsBtm, &Bottom::clicked, this, &PlotAPI::btmAddingPoints);
 
     // очистить всё
-
+    cleanAllBtm = new Bottom("", 40, 40);
+    cleanAllBtm->setPos(40, 80);
+    cleanAllBtm->setPuxmap("://res/cleanAll.png");
+    scene->addItem(cleanAllBtm);
+    connect(cleanAllBtm, &Bottom::clicked, this, &PlotAPI::btmCleanAll);
 
 
     // интерактив
@@ -219,6 +215,7 @@ void PlotAPI::displayMainMenu()
     connect(interaction, &PlotInteraction::clicked, this, &PlotAPI::editPoints);
 
     connect(_generator, &Generator::empty, this, &PlotAPI::emptyFuncs);
+    applyButtonStates();
 }
 
 
@@ -370,6 +367,13 @@ void PlotAPI::btmAddingPoints()
     interaction->creating();
 }
 
+void PlotAPI::btmCleanAll()
+{
+    _generator->removeAll();
+    emptyFuncs();
+    //scene->update();
+}
+
 void PlotAPI::editPoints(QPointF pos, Qt::MouseButton button)
 {
     // pos -> local pos
@@ -383,15 +387,18 @@ void PlotAPI::editPoints(QPointF pos, Qt::MouseButton button)
     QPointF logicalRadius = mainFunc->pixelToLogical(posInFunc + QPointF(4, 0));
     double r = fabs(logicalRadius.x() - logicalPos.x());
 
+
     // add point
     if (button == Qt::LeftButton){
 
         _generator->addControlPoints(logicalPos);
+        CONTROL_POINTS = _generator->getControlPoints();
     }
 
     //remove point
     if (button == Qt::RightButton){
         _generator->removeControlPoints(logicalPos, r);
+        CONTROL_POINTS = _generator->getControlPoints();
     }
     updateFunctions();
     scene->update();
@@ -399,16 +406,27 @@ void PlotAPI::editPoints(QPointF pos, Qt::MouseButton button)
 
 void PlotAPI::emptyFuncs()
 {
+
     for (auto &f : _generator->getFunc())
         f->setVisible(false);
+
 }
 
 void PlotAPI::updateFunctions()
 {
+    auto funcs = _generator->getFunc();
+    if (funcs.isEmpty()) return;
+
     for (const auto& f : _generator->getFunc()){
         f->setParentItem(_rect);
         //scene->addItem(f);
     }
+
+    funcs[0]->setVisible(fLine);
+    funcs[1]->setVisible(fPunktire);
+    funcs[2]->setVisible(fPoint);
+
+
 }
 
 void PlotAPI::backToHomeXY()
@@ -438,6 +456,14 @@ void PlotAPI::changeVisible(bool flag, int index)
     }
 }
 
+void PlotAPI::applyButtonStates()
+{
+    changeBtmColor(!fLine, *lineBtm, Qt::gray);
+    changeBtmColor(!fPoint, *pointsBtm, Qt::gray);
+    changeBtmColor(!fPunktire, *punktireBtm, Qt::gray);
+}
+
+
 
 
 QRectF PlotAPI::logWheelRect(QRectF logicalRect)
@@ -464,6 +490,14 @@ void PlotAPI::bottomHomeClicked()
     _maxX = 0;
     _factor = 1;
     flagWheel = 0;
+    CONTROL_POINTS = QVector<Point3D>
+        {
+            {1, 1.2, 0},
+            {1.5, 1.39, 0},
+            {3, 1.5, 0},
+            {4.5, 1.39, 0},
+            {5, 1.2, 0}
+        };
 
     displayMainMenu();
 }
@@ -501,6 +535,7 @@ void PlotAPI::refresh()
     scene->update();
     scene->setSceneRect(0, 0, weight, height);
     displayMainMenu();
+    applyButtonStates();
     axies->setLogicalRange(_logicalRect.left(), _logicalRect.right(),
                            _logicalRect.top(), _logicalRect.bottom());
     scene->update();
