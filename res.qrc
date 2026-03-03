@@ -7,5 +7,6 @@
         <file>res/punktire.png</file>
         <file>res/point.png</file>
         <file>res/line.png</file>
+        <file>res/edit.png</file>
     </qresource>
 </RCC>

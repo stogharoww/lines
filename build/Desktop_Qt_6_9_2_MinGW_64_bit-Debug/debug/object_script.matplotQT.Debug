@@ -12,5 +12,6 @@ debug/plotapi.o
 debug/plotinteraction.o
 debug/qrc_res.o
 debug/moc_bottom.o
+debug/moc_generator.o
 debug/moc_plotapi.o
 debug/moc_plotinteraction.o

@@ -92,6 +92,32 @@ void Generator::addControlPoints(const QVector<QPointF> &pts)
     rebuild();
 }
 
+void Generator::removeControlPoints(const QPointF &point, double r)
+{
+    if (_CONTROL_POINTS.isEmpty()) return;
+
+
+    QRectF area(point.x() - r, point.y() - r, r * 2, r * 2);
+
+    for (auto &p_c : _CONTROL_POINTS){
+        QPointF p = point3DToPoint(p_c);
+        if (area.contains(p)){
+            int ind = _CONTROL_POINTS.indexOf(p_c);
+            _CONTROL_POINTS.removeAt(ind);
+            if (_CONTROL_POINTS.isEmpty()) {
+                emit empty();
+                return;
+            }
+
+            weightsUpdate();
+            rebuild();
+            return;
+        }
+    }
+
+    return;
+}
+
 void Generator::setWeights(const QVector<double> &w)
 {
     if (w.size() != _WEIGHTS.size()){
@@ -141,11 +167,14 @@ const QVector<Function *> &Generator::getFunc()
 
 void Generator::cleanFunc()
 {
-    /*
     for (auto f : _allFunc)
         delete f;
     _allFunc.clear();
-*/
+
+    _funcControl = nullptr;
+    _funcCurve = nullptr;
+    _funcPunktire = nullptr;
+
 }
 
 void Generator::run()
@@ -166,7 +195,6 @@ void Generator::run()
 
 void Generator::rebuild()
 {
-    cleanFunc();
     updateCurve();
     fillCurveNumpy();
     fillControlNumpy();
@@ -250,6 +278,11 @@ Point3D Generator::pointToPoints3D(QPointF point)
     return Point3D(point.x(), point.y(), 0);
 }
 
+QPointF Generator::point3DToPoint(Point3D point)
+{
+    return QPointF(point.x, point.y);
+}
+
 QVector<QPointF> Generator::points3DToQPointF()
 {
     QVector<QPointF> pointsF;
@@ -264,8 +297,7 @@ QVector<QPointF> Generator::points3DToQPointF()
 void Generator::buildFunctions()
 {
 
-    delete _funcCurve;
-    delete _funcControl;
+    cleanFunc();
 
 
     _funcCurve = new Function(*_npCurvePointsX, *_npCurvePointsY);
@@ -338,12 +370,13 @@ void Generator::fillPunctireNumpy()
     NumpyC tmpY;
 
     double k = _CURVE_NUM_POINTS / 10;
-
-    for (int i = 1; i < _npControlPointsX->size(); i++){
-        tmpX.arange((*_npControlPointsX)[i - 1], (*_npControlPointsX)[i], k);
-        tmpY.arange((*_npControlPointsY)[i - 1], (*_npControlPointsY)[i], k);
-        _npPunctirePointsX->push_back(tmpX);
-        _npPunctirePointsY->push_back(tmpY);
+    if (k >= 1){
+        for (int i = 1; i < _npControlPointsX->size(); i++){
+            tmpX.arange((*_npControlPointsX)[i - 1], (*_npControlPointsX)[i], k);
+            tmpY.arange((*_npControlPointsY)[i - 1], (*_npControlPointsY)[i], k);
+            _npPunctirePointsX->push_back(tmpX);
+            _npPunctirePointsY->push_back(tmpY);
+        }
     }
 }
 

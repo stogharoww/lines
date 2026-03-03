@@ -5,14 +5,15 @@
 #include <Curve.h>
 #include <QRectF>
 #include <QPointF>
-
+#include <QObject>
 
 
 
 
 // генерирует функции по точкам
-class Generator
+class Generator: public QObject
 {
+    Q_OBJECT
 public:
     Generator();
     // генератор с уже подготовленными logicalRect и pixelRect
@@ -33,6 +34,8 @@ public:
     void addControlPoints(const Point3D& point);
     void addControlPoints(const QPointF& point);
     void addControlPoints(const QVector<QPointF>& pts);
+
+    void removeControlPoints(const QPointF& point, double r);
 
     // устанавливаем веса
     void setWeights(const QVector<double>& w);
@@ -80,6 +83,8 @@ public:
     QRectF logicalRectPls();
 
 
+signals:
+    void empty();
 
 
 
@@ -117,6 +122,7 @@ private:
     // переформатирует points в Point3D
     QVector<Point3D> pointsToPoints3D();
     Point3D pointToPoints3D(QPointF point);
+    QPointF point3DToPoint(Point3D point);
 
     // переформатирует Point3D в QPointF
     QVector<QPointF> points3DToQPointF();

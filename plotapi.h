@@ -49,6 +49,10 @@ public slots:
     void btmPunktireClicked();
     void btmPointClicked();
     void btmLineClicked();
+    void btmAddingPoints();
+    // редактирование точек
+    void editPoints(QPointF pos, Qt::MouseButton button);
+    void emptyFuncs();
 
 private:
 
@@ -66,6 +70,8 @@ private:
     double rectWeight;
     double rectHeight;
     //Function* func;
+    void updateFunctions();
+
     AxisItem *axies;
     QRectF graphRect;
     PlotInteraction *interaction;
@@ -80,7 +86,6 @@ private:
 
     void backToHomeXY();
 
-    void functionAndMove();
 
     bool fPoint = true;
     bool fLine = true;
@@ -90,7 +95,11 @@ private:
     Bottom *punktireBtm;
     Bottom *pointsBtm;
     Bottom *lineBtm;
-    void changeBtmColor(bool flag, Bottom &btm);
+    Bottom *cleanAll;
+    void changeBtmColor(bool flag, Bottom &btm, QColor col = QColor(Qt::gray));
+    void changeVisible(bool flag, int index);
+
+    Bottom *addingPointsBtm;
 
 
     QRectF _logicalRect;

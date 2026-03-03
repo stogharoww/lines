@@ -5,6 +5,9 @@
 PlotInteraction::PlotInteraction(const QRectF &rect, QGraphicsItem *parent)
     : QObject(), QGraphicsRectItem(rect, parent)
 {
+    if (!creatingPoints)
+        //setAcceptedMouseButtons(Qt::LeftButton);
+
     //setAcceptedMouseButtons(Qt::LeftButton);
     setAcceptHoverEvents(true);
     setBrush(Qt::NoBrush);
@@ -19,11 +22,14 @@ void PlotInteraction::creating()
 
 void PlotInteraction::mousePressEvent(QGraphicsSceneMouseEvent  *event)
 {
-    if (creatingPoints == 0){
+    if (!creatingPoints){
         if (event->button() == Qt::LeftButton){
             dragging = true;
             lastPos = event->pos();
         }
+    }
+    if (creatingPoints){
+        emit clicked(event->pos(), event->button());
     }
 }
 
@@ -32,11 +38,9 @@ void PlotInteraction::mouseMoveEvent(QGraphicsSceneMouseEvent  *event)
     if (creatingPoints == 0){
         if (!dragging){
             //_followMouse->updateP(event->pos());
-
             return;
         }
         //_followMouse->updateP(event->pos());
-
         QPointF delta = event->pos() - lastPos;
         lastPos = event->pos();
         emit requested(delta);
@@ -60,16 +64,14 @@ void PlotInteraction::mouseReleaseEvent(QGraphicsSceneMouseEvent  *event)
 
 void PlotInteraction::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
-    if (creatingPoints == 0){
-        event->accept();
-        movingPos = event->pos();
-        //QPointF moved = movingPos - event->pos();
+    event->accept();
+    movingPos = event->pos();
+    //QPointF moved = movingPos - event->pos();
 
-        //emit leaved(false);
-        emit moving(movingPos);
+    //emit leaved(false);
+    emit moving(movingPos);
 
-        //_followMouse->updateP(event->pos());
-    }
+    //_followMouse->updateP(event->pos());
 }
 
 void PlotInteraction::hoverEnterEvent(QGraphicsSceneHoverEvent *event)

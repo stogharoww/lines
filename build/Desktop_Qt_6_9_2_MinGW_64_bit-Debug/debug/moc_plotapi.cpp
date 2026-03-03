@@ -51,7 +51,12 @@ template <> constexpr inline auto PlotAPI::qt_create_metaobjectdata<qt_meta_tag_
         "localPos",
         "btmPunktireClicked",
         "btmPointClicked",
-        "btmLineClicked"
+        "btmLineClicked",
+        "btmAddingPoints",
+        "editPoints",
+        "Qt::MouseButton",
+        "button",
+        "emptyFuncs"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -79,6 +84,14 @@ template <> constexpr inline auto PlotAPI::qt_create_metaobjectdata<qt_meta_tag_
         QtMocHelpers::SlotData<void()>(12, 2, QMC::AccessPublic, QMetaType::Void),
         // Slot 'btmLineClicked'
         QtMocHelpers::SlotData<void()>(13, 2, QMC::AccessPublic, QMetaType::Void),
+        // Slot 'btmAddingPoints'
+        QtMocHelpers::SlotData<void()>(14, 2, QMC::AccessPublic, QMetaType::Void),
+        // Slot 'editPoints'
+        QtMocHelpers::SlotData<void(QPointF, Qt::MouseButton)>(15, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QPointF, 6 }, { 0x80000000 | 16, 17 },
+        }}),
+        // Slot 'emptyFuncs'
+        QtMocHelpers::SlotData<void()>(18, 2, QMC::AccessPublic, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -110,6 +123,9 @@ void PlotAPI::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         case 5: _t->btmPunktireClicked(); break;
         case 6: _t->btmPointClicked(); break;
         case 7: _t->btmLineClicked(); break;
+        case 8: _t->btmAddingPoints(); break;
+        case 9: _t->editPoints((*reinterpret_cast< std::add_pointer_t<QPointF>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<Qt::MouseButton>>(_a[2]))); break;
+        case 10: _t->emptyFuncs(); break;
         default: ;
         }
     }
@@ -134,14 +150,14 @@ int PlotAPI::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 8)
+        if (_id < 11)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 8;
+        _id -= 11;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 8)
+        if (_id < 11)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 8;
+        _id -= 11;
     }
     return _id;
 }

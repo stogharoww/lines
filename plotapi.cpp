@@ -81,147 +81,6 @@ void PlotAPI::displayMainMenu()
     rectHeight = height/1.5;
     _rect->setRect(0,0,rectWeight, rectHeight);
 
-/*
-    //отрисовка функции:
-    NumpyC *npX = new NumpyC();
-    int minX = -20, maxX = 10;
-    npX->arange(minX, maxX, 1000);
-    NumpyC *npY = new NumpyC(NumpyC::pow((*npX), 2));
-
-    //double minY = npY->min();
-    //double maxY = npY->max();
-    //if (maxY > 1000) maxY = 1000;
-    //if (minY < -1000) minY = -1000;
-    //QPen pen = QPen(Qt::blue, 2);
-    //example 1
-
-    NumpyC *npXSPLINE = new NumpyC();
-    double minXX = 10.001, maxXX = 50;
-    npXSPLINE->arange(minXX, maxXX, 1000);
-    NumpyC *npYtmp = new NumpyC();
-    NumpyC *npYSPLINE = new NumpyC(NumpyC::cos(*npXSPLINE) * 50);
-    double minYtmp = npYSPLINE->min(), maxYtmp = npY->max();
-    npYtmp->arange(minYtmp, maxYtmp, 1000);
-    NumpyC npYres;
-    NumpyC npXres;
-    npYres = *npY + *npYtmp + *npYSPLINE;
-    npXres = *npX + *npXSPLINE;
-    Function *func = new Function(npXres, npYres);
-    minX = npXres.min(), maxX = npXres.max();
-    double minY = npYres.min(), maxY = npYres.max();
-    func->setHeight(rectWeight, rectHeight); //смещение наверх и прочее
-    func->setViewport(QRectF(minX, minY, maxX - minX, maxY - minY),
-                      QRectF(0, 0, rectWeight, rectHeight));
-*/
-
-
-
-    /*
-    const std::vector<Point3D> CONTROL_POINTS
-        {
-            {1, 1.2, 0},
-            {1.5, 1.39, 0},
-            {3, 1.5, 0},
-            {4.5, 1.39, 0},
-            {5, 1.2, 0}
-        };
-
-    const std::vector<double> WEIGHTS(CONTROL_POINTS.size(), 1);   // Весовые коэффициенты контрольных точек
-    const int CURVE_NUM_POINTS = 61;   // Кол-во точек, из которых будет состоять кривая
-    const int DEGREE = 2;   // Степень кривой
-
-    Curve originalCurve(CONTROL_POINTS, WEIGHTS, DEGREE, CURVE_NUM_POINTS);
-
-    // === Парабола: x² на [-20, 9.5] ===
-    NumpyC* npX1 = new NumpyC();
-    npX1->arange(-20, 9.5, 800);
-    NumpyC* npY1 = new NumpyC(NumpyC::pow(*npX1, 2));
-    //NumpyC* npY1C = new NumpyC(NumpyC::sin(*npX1) * 50);
-    //*npY1 = *npY1 + *npY1C;
-
-    // === Синусоида: cos(x)*50 на [10.5, 50] ===
-    NumpyC* npX2 = new NumpyC();
-    npX2->arange(10.5, 50, 1000);
-    NumpyC* npY2 = new NumpyC(NumpyC::cos(*npX2) * 50);
-
-    // === Кубический сплайн на [9.5, 10.5] ===
-    double x0 = 9.5, x1 = 10.5;
-    double y0 = x0 * x0;                     // значение параболы
-    double y1 = std::cos(x1) * 50;           // значение синусоиды
-    double dy0 = 2 * x0;                     // производная параболы
-    double dy1 = -std::sin(x1) * 50;         // производная синусоиды
-
-    double h = x1 - x0;
-    double a = y0;
-    double b = dy0;
-    double c = (3*(y1 - y0)/h - 2*dy0 - dy1) / h;
-    double d = (2*(y0 - y1)/h + dy0 + dy1) / (h*h);
-
-    // === Генерация X и Y по сплайну ===
-    NumpyC blendX;
-    blendX.arange(x0, x1, 200);
-    NumpyC blendY = blendX.map([=](double x) {
-        double dx = x - x0;
-        return a + b*dx + c*dx*dx + d*dx*dx*dx;
-    });
-
-    // === Объединение всех участков ===
-    NumpyC npXres = npX1->copy();
-    npXres.push_back(blendX);
-    npXres.push_back(*npX2);
-
-    NumpyC npYres = npY1->copy();
-    npYres.push_back(blendY);
-    npYres.push_back(*npY2);
-
-    // === Вычисление логических границ ===
-    double minX, maxX, minY, maxY;
-
-    if (_minX == _maxX){ // 1 запуск с инициализацией _logicalRect
-
-        minX = npXres.min();
-        maxX = npXres.max();
-        minY = std::floor(npYres.min() / 100.0) * 100.0;
-        maxY = std::ceil(npYres.max() / 100.0) * 100.0;
-
-        _logicalRect = QRectF(minX, minY, maxX - minX, maxY - minY);
-        _baseRect = _logicalRect;
-        setMinMaxXY(minX, minY, maxX, maxY);
-
-    }
-    else {
-        // используем уже существующий _logicalRect
-        minX = _logicalRect.left();
-        maxX = _logicalRect.right();
-        minY = _logicalRect.top();
-        maxY = _logicalRect.bottom();
-    }
-    // === Отрисовка ===
-    func = new Function(npXres, npYres);
-    //func->setHeight(rectWeight, rectHeight); //смещение наверх и прочее
-
-
-
-    _pixelRect = QRectF(0, 0, rectWeight, rectHeight);
-    func->setViewport(_logicalRect, _pixelRect);
-
-
-
-
-
-
-    //double scaleX = rectWeight / (maxX - minX);
-    //double scaleY = rectHeight / (maxY - minY);
-    //func->setMins(minX, minY);
-    //func->setScale(scaleX, -scaleY); // инверсия Y
-    //func->setOffset(0, rectHeight);  // смещение вверх
-
-
-
-    func->setParentItem(_rect);
-
-
-    */
 
     // отрисовка функций
     double x, y;
@@ -271,10 +130,7 @@ void PlotAPI::displayMainMenu()
     _generator->setViewport(_logicalRect, _pixelRect);
     _generator->run();
 
-    for (const auto& f : _generator->getFunc()){
-        f->setParentItem(_rect);
-        //scene->addItem(f);
-    }
+    updateFunctions();
 
 
 
@@ -329,6 +185,16 @@ void PlotAPI::displayMainMenu()
     scene->addItem(lineBtm);
     connect(lineBtm, &Bottom::clicked, this, &PlotAPI::btmLineClicked);
 
+    // вкл/выкл режим редактирования точек
+    addingPointsBtm = new Bottom("", 40, 40);
+    addingPointsBtm->setPos(0, 80);
+    addingPointsBtm->setPuxmap("://res/edit.png");
+    scene->addItem(addingPointsBtm);
+    connect(addingPointsBtm, &Bottom::clicked, this, &PlotAPI::btmAddingPoints);
+
+    // очистить всё
+
+
 
     // интерактив
     interaction = new PlotInteraction(graphRect);
@@ -350,7 +216,9 @@ void PlotAPI::displayMainMenu()
     connect(interaction, &PlotInteraction::moving, this, &PlotAPI::movingMouse);
     connect(interaction, &PlotInteraction::leaved, this, &PlotAPI::leaved);
     connect(interaction, &PlotInteraction::wheel, this, &PlotAPI::wheel);
+    connect(interaction, &PlotInteraction::clicked, this, &PlotAPI::editPoints);
 
+    connect(_generator, &Generator::empty, this, &PlotAPI::emptyFuncs);
 }
 
 
@@ -392,17 +260,6 @@ void PlotAPI::movingMouse(QPointF pos)
     _textItem->setPos(xR, yR);
 
     scene->update();
-    //scene->addItem(_rectMoving);
-    /*
-    _rectMoving = new QGraphicsRectItem();
-    int x = pos.x();
-    int y = pos.y();
-    QBrush brush(QColor(0, 0, 0));
-    _rectMoving->setBrush(brush);
-    _rectMoving->setRect(x, y, 50, 20);
-    scene->addItem(_rectMoving);
-*/
-
 
     //текст
     auto funcs = _generator->getFunc();
@@ -415,9 +272,6 @@ void PlotAPI::movingMouse(QPointF pos)
                        .arg(logicalPos.y(), 0, 'f', 2);
 
     _textItem->setPlainText(text);
-
-
-
 
 }
 
@@ -474,18 +328,6 @@ void PlotAPI::wheel(QPointF localPos, int delta)
 
     _logicalRect = newRect;
 
-
-
-
-
-
-
-    //QRectF newRect = logWheelRect(_logicalRect);
-    //if (newRect.width() < 10) return;
-    //if (newRect.height() < 10) return;
-
-    //_logicalRect = newRect;
-
     _minX = _logicalRect.left();
     _maxX = _logicalRect.right();
     _minY = _logicalRect.top();
@@ -498,7 +340,6 @@ void PlotAPI::wheel(QPointF localPos, int delta)
     axies->setLogicalRange(_logicalRect.left(), _logicalRect.right(), _logicalRect.top(), _logicalRect.bottom());
 
 
-
     scene->update();
 
 }
@@ -506,40 +347,68 @@ void PlotAPI::wheel(QPointF localPos, int delta)
 void PlotAPI::btmPunktireClicked()
 {
     changeBtmColor(fPunktire, *punktireBtm);
-    if (fPunktire)
-        _generator->getFunc()[1]->setVisible(false);
-    else if (!fPunktire){
-        _generator->getFunc()[1]->setVisible(true);
-    }
-
+    changeVisible(fPunktire, 1);
     fPunktire = !fPunktire;
 }
 
 void PlotAPI::btmPointClicked()
 {
     changeBtmColor(fPoint, *pointsBtm);
-
-    if (fPoint)
-        _generator->getFunc()[2]->setVisible(false);
-    else if (!fPoint){
-        _generator->getFunc()[2]->setVisible(true);
-    }
-
-
+    changeVisible(fPoint, 2);
     fPoint = !fPoint;
 }
 
 void PlotAPI::btmLineClicked()
 {
     changeBtmColor(fLine, *lineBtm);
+    changeVisible(fLine, 0);
+    fLine = !fLine;
+}
 
-    if (fLine)
-        _generator->getFunc()[0]->setVisible(false);
-    else if (!fLine){
-        _generator->getFunc()[0]->setVisible(true);
+void PlotAPI::btmAddingPoints()
+{
+    interaction->creating();
+}
+
+void PlotAPI::editPoints(QPointF pos, Qt::MouseButton button)
+{
+    // pos -> local pos
+    auto funcs = _generator->getFunc();
+    if (funcs.isEmpty()) return;
+    Function* mainFunc = funcs[0];
+    QPointF scenePos = interaction->mapToScene(pos);
+    QPointF posInFunc = _rect->mapFromScene(scenePos);
+    QPointF logicalPos = mainFunc->pixelToLogical(posInFunc);
+
+    QPointF logicalRadius = mainFunc->pixelToLogical(posInFunc + QPointF(4, 0));
+    double r = fabs(logicalRadius.x() - logicalPos.x());
+
+    // add point
+    if (button == Qt::LeftButton){
+
+        _generator->addControlPoints(logicalPos);
     }
 
-    fLine = !fLine;
+    //remove point
+    if (button == Qt::RightButton){
+        _generator->removeControlPoints(logicalPos, r);
+    }
+    updateFunctions();
+    scene->update();
+}
+
+void PlotAPI::emptyFuncs()
+{
+    for (auto &f : _generator->getFunc())
+        f->setVisible(false);
+}
+
+void PlotAPI::updateFunctions()
+{
+    for (const auto& f : _generator->getFunc()){
+        f->setParentItem(_rect);
+        //scene->addItem(f);
+    }
 }
 
 void PlotAPI::backToHomeXY()
@@ -550,19 +419,26 @@ void PlotAPI::backToHomeXY()
     _maxY = _start_maxY;
 }
 
-void PlotAPI::functionAndMove()
-{
 
-}
-
-void PlotAPI::changeBtmColor(bool flag, Bottom &btm)
+void PlotAPI::changeBtmColor(bool flag, Bottom &btm, QColor col)
 {
     if (flag){
-        btm.setColor(Qt::gray);
+        btm.setColor(col);
     } else if (!flag){
         btm.setColor(Qt::darkCyan);
     }
 }
+
+void PlotAPI::changeVisible(bool flag, int index)
+{
+    if (flag)
+        _generator->getFunc()[index]->setVisible(false);
+    else if (!flag){
+        _generator->getFunc()[index]->setVisible(true);
+    }
+}
+
+
 
 QRectF PlotAPI::logWheelRect(QRectF logicalRect)
 {
@@ -577,27 +453,8 @@ QRectF PlotAPI::logWheelRect(QRectF logicalRect)
 }
 
 
-void PlotAPI::bottomHomeClicked(){
-    /*
-    resize(800, 400);
-    //возвращаем график к точке 0:0
-    _logicalRect = _baseRect;
-    backToHomeXY();
-    _factor = 1;
-    flagWheel = 0;
-
-    _pixelRect.setRect(0, 0, rectWeight, rectHeight);
-
-    func->setViewport(_logicalRect, _pixelRect);
-
-
-    axies->setLogicalRange(_minX, _maxX, _minY, _maxY);
-    axies->moveAxies(0, 0);
-
-
-    scene->update();
-*/
-
+void PlotAPI::bottomHomeClicked()
+{
     resize(800, 400);
     scene->clear();
     fPoint = true;
@@ -609,62 +466,7 @@ void PlotAPI::bottomHomeClicked(){
     flagWheel = 0;
 
     displayMainMenu();
-
-
 }
-
-
-
-/*
-void PlotAPI::mousePressEvent(QMouseEvent *event)
-{
-    QPoint pos = event->pos();
-    if (!graphRect.contains(pos)) return;
-
-    if (event->button() == Qt::LeftButton){
-        dragging = true;
-        lastMousePos = event->pos();
-    }
-}
-
-void PlotAPI::mouseMoveEvent(QMouseEvent *event)
-{
-    if (!dragging) return;
-    QPoint pos = event->pos();
-    if (!graphRect.contains(pos)) return;
-
-    QPoint delta = event->pos() - lastMousePos;
-    lastMousePos = event->pos();
-
-    double dx = -delta.x() * (_maxX - _minX) / rectWeight;
-    double dy = delta.y() * (_maxY - _minY) / rectHeight;
-
-    _minX += dx;
-    _maxX += dx;
-    _minY += dy;;
-    _maxY += dy;;
-
-
-    func->setViewport(QRectF(_minX, _minY, _maxX - _minX, _maxY - _minY),
-                      QRectF(0, 0, rectWeight, rectHeight));
-
-
-    axies->setLogicalRange(_minX, _maxX, _minY, _maxY);
-
-    scene->update();
-
-}
-
-void PlotAPI::mouseReleaseEvent(QMouseEvent *event)
-{
-    QPoint pos = event->pos();
-    if (!graphRect.contains(pos)) return;
-    if (event->button() == Qt::LeftButton){
-        dragging = false;
-    }
-}
-
-*/
 
 
 
@@ -699,15 +501,7 @@ void PlotAPI::refresh()
     scene->update();
     scene->setSceneRect(0, 0, weight, height);
     displayMainMenu();
-    //_logicalRect = logWheelRect(_logicalRect);
-    //_generator->setViewport(_logicalRect, _pixelRect);
     axies->setLogicalRange(_logicalRect.left(), _logicalRect.right(),
                            _logicalRect.top(), _logicalRect.bottom());
     scene->update();
-    //fitInView(scene->itemsBoundingRect(), Qt::KeepAspectRatio);
-
-
-
-
-
 }

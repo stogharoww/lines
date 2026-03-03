@@ -20,8 +20,10 @@ signals:
     void requested(QPointF delta);
     void moving(QPointF pos);
     void leaved(bool leave);
-
     void wheel(QPointF localPos, int delta);
+
+    //добавление точек
+    void clicked(QPointF pos, Qt::MouseButton button);
 
 public slots:
     void creating();

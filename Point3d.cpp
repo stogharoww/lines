@@ -55,3 +55,10 @@ Point3D &Point3D::operator-=(const Point3D &other)
     z -= other.z;
     return *this;
 }
+
+bool Point3D::operator==(const Point3D &a) const
+{
+    return qFuzzyCompare(x, a.x)
+        && qFuzzyCompare(y, a.y)
+        && qFuzzyCompare(z, a.z);
+}

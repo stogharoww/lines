@@ -74,12 +74,13 @@ void Function::rebuildPoints(const NumpyC& x, const NumpyC& y)
 
 void Function::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)
 {
-    if (_points.size() < 2) return;
+    if (_points.isEmpty()) return;
 
     QPen pen(Qt::blue, 2);
     QPen pointPen(Qt::red, 4);
     QPen punktirePen(Qt::black, 2);
     if (flagPoint == 0){
+        if (_points.size() < 2) return;
         painter->setPen(pen);
         if (flagPunktire)
             painter->setPen(punktirePen);
