@@ -14,6 +14,8 @@ public:
         _xKoef = xKoef;
         _yKoef = yKoef;
     }
+
+
     void setNameX(QString nameX, QString nameY){
         _nameX = nameX;
         _nameY = nameY;

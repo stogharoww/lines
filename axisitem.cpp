@@ -12,7 +12,12 @@ AxisItem::AxisItem(qreal _x, qreal _y)
     _width = _x;
     _height = _y;
 }
-
+///
+/// \brief AxisItem::formatTickValue
+/// \param value
+/// \param range
+/// \return
+///
 QString AxisItem::formatTickValue(double value, double range)
 {
     _range = range;

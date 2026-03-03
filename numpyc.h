@@ -28,6 +28,8 @@ public:
     // Операторы
     double& operator[](int index);
     const double& operator[](int index) const;
+    double start();
+    double end();
 
     NumpyC operator+(const NumpyC& other) const; // поэлементное сложение
     NumpyC operator-(const NumpyC& other) const; // поэлементное вычитание
@@ -60,7 +62,7 @@ public:
         return NumpyC(result);
     }
 
-    //добавление массива, SPLINE
+    //добавление массива
     void push_back(const NumpyC& other);
 
     // Статистика

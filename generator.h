@@ -9,6 +9,7 @@
 
 
 
+
 // генерирует функции по точкам
 class Generator
 {
@@ -77,6 +78,9 @@ public:
 
 
 
+
+
+
 private:
     QVector<Function*> _allFunc;
     NumpyC *_npCurvePointsX;
@@ -84,6 +88,10 @@ private:
 
     NumpyC *_npControlPointsX;
     NumpyC *_npControlPointsY;
+
+    NumpyC *_npPunctirePointsX;
+    NumpyC *_npPunctirePointsY;
+
 
     QRectF _logicalRect;
     QRectF _pixelRect;
@@ -97,7 +105,7 @@ private:
     // меняет WEIGHTS на вектор, размер которого равен CONTROL_POINTS и заполненный 1
     void weightsUpdate();
 
-    int _CURVE_NUM_POINTS = 200;
+    int _CURVE_NUM_POINTS = 2000;
     int _DEGREE = 2;
 
     Curve _originalCurve;
@@ -113,6 +121,7 @@ private:
 
     Function *_funcCurve;
     Function *_funcControl;
+    Function *_funcPunktire;
     // построение функций
     void buildFunctions();
 
@@ -124,6 +133,9 @@ private:
 
     // заполняет numpy координатами контрольных точек
     void fillControlNumpy();
+
+    // пунктирчик
+    void fillPunctireNumpy();
 };
 
 

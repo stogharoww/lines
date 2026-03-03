@@ -23,6 +23,16 @@ double &NumpyC::operator[](int index)
 {
     return data[index];
 }
+
+double NumpyC::start()
+{
+    return data[0];
+}
+
+double NumpyC::end()
+{
+    return data.last();
+}
 const double& NumpyC::operator[](int index) const {
     return data[index];
 }

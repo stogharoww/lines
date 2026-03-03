@@ -47,7 +47,8 @@ template <> constexpr inline auto PlotInteraction::qt_create_metaobjectdata<qt_m
         "leaved",
         "leave",
         "wheel",
-        "localPos"
+        "localPos",
+        "creating"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -67,6 +68,8 @@ template <> constexpr inline auto PlotInteraction::qt_create_metaobjectdata<qt_m
         QtMocHelpers::SignalData<void(QPointF, int)>(8, 2, QMC::AccessPublic, QMetaType::Void, {{
             { QMetaType::QPointF, 9 }, { QMetaType::Int, 3 },
         }}),
+        // Slot 'creating'
+        QtMocHelpers::SlotData<void()>(10, 2, QMC::AccessPublic, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -94,6 +97,7 @@ void PlotInteraction::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
         case 1: _t->moving((*reinterpret_cast< std::add_pointer_t<QPointF>>(_a[1]))); break;
         case 2: _t->leaved((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
         case 3: _t->wheel((*reinterpret_cast< std::add_pointer_t<QPointF>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
+        case 4: _t->creating(); break;
         default: ;
         }
     }
@@ -130,14 +134,14 @@ int PlotInteraction::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 4)
+        if (_id < 5)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 4;
+        _id -= 5;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 4)
+        if (_id < 5)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 4;
+        _id -= 5;
     }
     return _id;
 }

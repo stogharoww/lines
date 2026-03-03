@@ -414,7 +414,7 @@ void PlotAPI::wheel(QPointF localPos, int delta)
 
     double k = 0.1;
     _factor -= k * delta / 120;
-    _factor = std::max(0.001, _factor);
+    _factor = std::max(0.1, _factor);
 
     _factor = std::min(_factor, 2.0);
     qDebug() << _factor;

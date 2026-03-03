@@ -23,6 +23,9 @@ signals:
 
     void wheel(QPointF localPos, int delta);
 
+public slots:
+    void creating();
+
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent  * event);
@@ -40,6 +43,8 @@ private:
     QPointF lastPos;
     QPointF movingPos;
     QRectF _rect;
+
+    bool creatingPoints = 0;
 
 };
 

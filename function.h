@@ -4,6 +4,7 @@
 #include <QRectF>
 #include "numpyc.h"
 
+
 // Отображает график функции по точкам
 class Function : public QGraphicsItem
 {
@@ -20,6 +21,9 @@ public:
     QRectF getLogicalRect() const;
     QRectF getPixelRect() const;
 
+    void pointed();
+    void punctire();
+
 
 private:
     QVector<QPointF> _points;       // Пиксельные координаты
@@ -32,6 +36,11 @@ private:
     NumpyC _rawX;
     NumpyC _rawY;
     QRectF _movedRect;
+    bool flagPoint = 0;
+    bool flagPunktire = 0;
+
+
+
 
 
     void rebuildPoints(const NumpyC& x, const NumpyC& y);

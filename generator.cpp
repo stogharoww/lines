@@ -9,7 +9,9 @@ Generator::Generator() :
     _npControlPointsX(nullptr),
     _npControlPointsY(nullptr),
     _funcCurve(nullptr),
-    _funcControl(nullptr)
+    _funcControl(nullptr),
+    _npPunctirePointsX(nullptr),
+    _npPunctirePointsY(nullptr)
 {
 }
 
@@ -157,6 +159,7 @@ void Generator::run()
 
     fillCurveNumpy();
     fillControlNumpy();
+    fillPunctireNumpy();
 
     buildFunctions();
 }
@@ -167,6 +170,7 @@ void Generator::rebuild()
     updateCurve();
     fillCurveNumpy();
     fillControlNumpy();
+    fillPunctireNumpy();
     buildFunctions();
 }
 
@@ -265,13 +269,21 @@ void Generator::buildFunctions()
 
 
     _funcCurve = new Function(*_npCurvePointsX, *_npCurvePointsY);
-    _funcCurve->setViewport(_logicalRect, _pixelRect);
-
     _funcControl = new Function(*_npControlPointsX, *_npControlPointsY);
-    _funcControl->setViewport(_logicalRect, _pixelRect);
+    _funcPunktire = new Function(*_npPunctirePointsX, *_npPunctirePointsY);
 
     addFunc(_funcCurve);
     addFunc(_funcControl);
+    addFunc(_funcPunktire);
+
+    for (auto &f : _allFunc){
+        f->setViewport(_logicalRect, _pixelRect);
+    }
+
+
+    _funcControl->pointed();
+    _funcPunktire->punctire();
+
 }
 
 void Generator::updateFunctions()
@@ -313,6 +325,25 @@ void Generator::fillControlNumpy()
     for (const auto &controlPoint : _originalCurve.getControlPoints()){
         _npControlPointsX->pushBack(controlPoint.x);
         _npControlPointsY->pushBack(controlPoint.y);
+    }
+}
+
+void Generator::fillPunctireNumpy()
+{
+    delete _npPunctirePointsX;
+    delete _npPunctirePointsY;
+    _npPunctirePointsX = new NumpyC();
+    _npPunctirePointsY = new NumpyC();
+    NumpyC tmpX;
+    NumpyC tmpY;
+
+    double k = _CURVE_NUM_POINTS / 10;
+
+    for (int i = 1; i < _npControlPointsX->size(); i++){
+        tmpX.arange((*_npControlPointsX)[i - 1], (*_npControlPointsX)[i], k);
+        tmpY.arange((*_npControlPointsY)[i - 1], (*_npControlPointsY)[i], k);
+        _npPunctirePointsX->push_back(tmpX);
+        _npPunctirePointsY->push_back(tmpY);
     }
 }
 

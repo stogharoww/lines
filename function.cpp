@@ -1,6 +1,7 @@
 #include "function.h"
 #include <QPainter>
 #include <QtMath>
+#include "generator.h"
 
 Function::Function(const NumpyC& x, const NumpyC& y)
 {
@@ -11,6 +12,7 @@ Function::Function(const NumpyC& x, const NumpyC& y)
     rebuildPoints(x, y);
 
     rebuildPoints(x, y);
+
 }
 
 void Function::setViewport(const QRectF& logicalRect, const QRectF& pixelRect)
@@ -75,13 +77,47 @@ void Function::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget
     if (_points.size() < 2) return;
 
     QPen pen(Qt::blue, 2);
-    painter->setPen(pen);
+    QPen pointPen(Qt::red, 4);
+    QPen punktirePen(Qt::black, 2);
+    if (flagPoint == 0){
+        painter->setPen(pen);
+        if (flagPunktire)
+            painter->setPen(punktirePen);
+        const int SEGMENTS = 200;
 
-    const int SEGMENTS = 200;
+        int drawCount = 20;
+        int skipCount = 20;
+        int counter = 0;
+        bool draw = true;
 
-    for (int i = 1; i < _points.size(); ++i) {
-        if (_pixelRect.contains(_points[i]))
-            painter->drawLine(_points[i - 1], _points[i]);
+        for (int i = 1; i < _points.size(); ++i) {
+            if (_pixelRect.contains(_points[i])){
+                if (flagPunktire == 0)
+                    painter->drawLine(_points[i - 1], _points[i]);
+                if (flagPunktire){
+                    if (draw)
+                        painter->drawLine(_points[i - 1], _points[i]);
+                    counter++;
+                    if (draw and counter >= drawCount){
+                        draw = false;
+                        counter = 0;
+                    } else if (!draw and counter>= skipCount){
+                        draw = true;
+                        counter = 0;
+                    }
+                }
+            }
+
+        }
+    }
+
+    if (flagPoint == 1){
+        painter->setPen(pointPen);
+        for (int i = 0; i < _points.size(); i++){
+            if (_pixelRect.contains(_points[i]))
+                painter->drawEllipse(_points[i], 3, 3);
+                //painter->drawPoint(_points[i]);
+        }
     }
 }
 
@@ -107,4 +143,16 @@ QRectF Function::getPixelRect() const
 {
     return _pixelRect;
 }
+
+void Function::pointed()
+{
+    flagPoint = 1;
+    update();
+}
+
+void Function::punctire()
+{
+    flagPunktire = 1;
+}
+
 

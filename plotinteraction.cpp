@@ -12,51 +12,64 @@ PlotInteraction::PlotInteraction(const QRectF &rect, QGraphicsItem *parent)
     _rect = rect;
 }
 
+void PlotInteraction::creating()
+{
+    creatingPoints = !creatingPoints;
+}
+
 void PlotInteraction::mousePressEvent(QGraphicsSceneMouseEvent  *event)
 {
-    if (event->button() == Qt::LeftButton){
-        dragging = true;
-        lastPos = event->pos();
+    if (creatingPoints == 0){
+        if (event->button() == Qt::LeftButton){
+            dragging = true;
+            lastPos = event->pos();
+        }
     }
 }
 
 void PlotInteraction::mouseMoveEvent(QGraphicsSceneMouseEvent  *event)
 {
-    if (!dragging){
+    if (creatingPoints == 0){
+        if (!dragging){
+            //_followMouse->updateP(event->pos());
+
+            return;
+        }
         //_followMouse->updateP(event->pos());
 
-        return;
+        QPointF delta = event->pos() - lastPos;
+        lastPos = event->pos();
+        emit requested(delta);
+        movingPos = event->pos();
+        //QPointF moved = movingPos - event->pos();
+
+        //emit leaved(false);
+        //emit moving(movingPos);
     }
-    //_followMouse->updateP(event->pos());
-
-    QPointF delta = event->pos() - lastPos;
-    lastPos = event->pos();
-    emit requested(delta);
-    movingPos = event->pos();
-    //QPointF moved = movingPos - event->pos();
-
-    //emit leaved(false);
-    //emit moving(movingPos);
 
 }
 
 void PlotInteraction::mouseReleaseEvent(QGraphicsSceneMouseEvent  *event)
 {
-    if (event->button() == Qt::LeftButton){
-        dragging = false;
+    if (creatingPoints == 0){
+        if (event->button() == Qt::LeftButton){
+            dragging = false;
+        }
     }
 }
 
 void PlotInteraction::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
-    event->accept();
-    movingPos = event->pos();
-    //QPointF moved = movingPos - event->pos();
+    if (creatingPoints == 0){
+        event->accept();
+        movingPos = event->pos();
+        //QPointF moved = movingPos - event->pos();
 
-    //emit leaved(false);
-    emit moving(movingPos);
+        //emit leaved(false);
+        emit moving(movingPos);
 
-    //_followMouse->updateP(event->pos());
+        //_followMouse->updateP(event->pos());
+    }
 }
 
 void PlotInteraction::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
