@@ -381,7 +381,9 @@ void PlotAPI::btmLineClicked()
 
 void PlotAPI::btmAddingPoints()
 {
+    changeBtmColor(flagEdit, *addingPointsBtm, QColor(Qt::yellow));
     interaction->creating();
+    flagEdit = !flagEdit;
 }
 
 void PlotAPI::btmCleanAll()

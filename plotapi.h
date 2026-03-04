@@ -93,6 +93,7 @@ private:
     bool fPoint = true;
     bool fLine = true;
     bool fPunktire = true;
+    bool flagEdit = true;
 
     //bottoms
     Bottom *punktireBtm;
