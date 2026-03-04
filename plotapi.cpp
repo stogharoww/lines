@@ -75,6 +75,7 @@ void PlotAPI::setMinMaxXY(double minX, double minY, double maxX, double maxY)
  */
 void PlotAPI::displayMainMenu()
 {
+    btms.clear();
     _rect = new QGraphicsRectItem();
 
     QBrush brush(QColor(250, 250, 210));
@@ -153,10 +154,11 @@ void PlotAPI::displayMainMenu()
     //QString firstBtm = "Bottom кнопка";
 
     //home:
-    Bottom *homeBtm = new Bottom("", 40, 40);
+    homeBtm = new Bottom("", 40, 40);
     homeBtm->setPuxmap("://res/icons8-home-30.png");
     scene->addItem(homeBtm);
     connect(homeBtm, &Bottom::clicked, this, &PlotAPI::bottomHomeClicked);
+    btms.append(homeBtm);
 
     // скрыть / показать пунктир
     punktireBtm = new Bottom("", 40, 40);
@@ -164,6 +166,7 @@ void PlotAPI::displayMainMenu()
     punktireBtm->setPuxmap("://res/punktire.png");
     scene->addItem(punktireBtm);
     connect(punktireBtm, &Bottom::clicked, this, &PlotAPI::btmPunktireClicked);
+    btms.append(punktireBtm);
 
     // скрыть / показать точки
     pointsBtm = new Bottom("", 40, 40);
@@ -171,6 +174,7 @@ void PlotAPI::displayMainMenu()
     pointsBtm->setPuxmap("://res/point.png");
     scene->addItem(pointsBtm);
     connect(pointsBtm, &Bottom::clicked, this, &PlotAPI::btmPointClicked);
+    btms.append(pointsBtm);
 
     // скрыть / показать функцию
     lineBtm = new Bottom("", 40, 40);
@@ -178,6 +182,7 @@ void PlotAPI::displayMainMenu()
     lineBtm->setPuxmap("://res/line.png");
     scene->addItem(lineBtm);
     connect(lineBtm, &Bottom::clicked, this, &PlotAPI::btmLineClicked);
+    btms.append(lineBtm);
 
     // вкл/выкл режим редактирования точек
     addingPointsBtm = new Bottom("", 40, 40);
@@ -185,6 +190,7 @@ void PlotAPI::displayMainMenu()
     addingPointsBtm->setPuxmap("://res/edit.png");
     scene->addItem(addingPointsBtm);
     connect(addingPointsBtm, &Bottom::clicked, this, &PlotAPI::btmAddingPoints);
+    btms.append(addingPointsBtm);
 
     // очистить всё
     cleanAllBtm = new Bottom("", 40, 40);
@@ -192,6 +198,7 @@ void PlotAPI::displayMainMenu()
     cleanAllBtm->setPuxmap("://res/cleanAll.png");
     scene->addItem(cleanAllBtm);
     connect(cleanAllBtm, &Bottom::clicked, this, &PlotAPI::btmCleanAll);
+    btms.append(cleanAllBtm);
 
     // взять точки из файла
 
@@ -200,14 +207,21 @@ void PlotAPI::displayMainMenu()
     readFileBtm->setPuxmap("://res/read.png");
     scene->addItem(readFileBtm);
     connect(readFileBtm, &Bottom::clicked, this, &PlotAPI::btmReadFile);
+    btms.append(readFileBtm);
+
+    // сохранить
+    saveBtm = new Bottom("", 40, 40);
+    saveBtm->setPos(40, 120);
+    saveBtm->setPuxmap("://res/save.png");
+    scene->addItem(saveBtm);
+    connect(saveBtm, &Bottom::clicked, this, &PlotAPI::btmSaveToPng);
+    btms.append(saveBtm);
+
 
     // интерактив
     interaction = new PlotInteraction(graphRect);
     interaction->setZValue(105);
     scene->addItem(interaction);
-
-
-
 
 
     connect(interaction, &PlotInteraction::requested, this, &PlotAPI::moveEvent);
@@ -410,6 +424,23 @@ void PlotAPI::btmReadFile()
 
 }
 
+void PlotAPI::btmSaveToPng()
+{
+    QString filePath = QFileDialog::getSaveFileName(
+        this,
+        "Сохранить файл",
+        QString(),
+        "Картинки (*.png)"
+        );
+
+    if (filePath.isEmpty()) return;
+
+    if (!filePath.endsWith(".png", Qt::CaseInsensitive))
+        filePath += ".png";
+
+    saveToPng(filePath);
+}
+
 void PlotAPI::editPoints(QPointF pos, Qt::MouseButton button)
 {
     // pos -> local pos
@@ -497,6 +528,9 @@ void PlotAPI::applyButtonStates()
     changeBtmColor(!fLine, *lineBtm, Qt::gray);
     changeBtmColor(!fPoint, *pointsBtm, Qt::gray);
     changeBtmColor(!fPunktire, *punktireBtm, Qt::gray);
+
+    flagEdit = !interaction->getFlagEdit();
+    changeBtmColor(!flagEdit, *addingPointsBtm, Qt::yellow);
 }
 
 
@@ -554,6 +588,24 @@ void PlotAPI::readFile(const QString &filePath)
 
 }
 
+void PlotAPI::saveToPng(const QString &filePath)
+{
+    for (auto* b : btms){
+        b->setVisible(false);
+    }
+
+    QImage image(scene->sceneRect().size().toSize(), QImage::Format_ARGB32);
+    image.fill(Qt::transparent);
+
+    QPainter painter(&image);
+    scene->render(&painter);
+    image.save(filePath);
+
+    for (auto* b : btms){
+        b->setVisible(true);
+    }
+}
+
 
 void PlotAPI::bottomHomeClicked()
 {
@@ -562,6 +614,7 @@ void PlotAPI::bottomHomeClicked()
     fPoint = true;
     fLine = true;
     fPunktire = true;
+    flagEdit = true;
     _minX = 0;
     _maxX = 0;
     _factor = 1;
@@ -616,3 +669,4 @@ void PlotAPI::refresh()
                            _logicalRect.top(), _logicalRect.bottom());
     scene->update();
 }
+

@@ -15,6 +15,11 @@ PlotInteraction::PlotInteraction(const QRectF &rect, QGraphicsItem *parent)
     _rect = rect;
 }
 
+bool PlotInteraction::getFlagEdit()
+{
+    return creatingPoints;
+}
+
 void PlotInteraction::creating()
 {
     creatingPoints = !creatingPoints;

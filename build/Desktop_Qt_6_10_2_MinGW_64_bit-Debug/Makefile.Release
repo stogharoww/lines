@@ -151,6 +151,7 @@ compiler_rcc_clean:
 	-$(DEL_FILE) release\qrc_res.cpp
 release/qrc_res.cpp: ../../res.qrc \
 		../../../../Qt6/6.10.2/mingw_64/bin/rcc.exe \
+		../../res/save.png \
 		../../res/read.png \
 		../../res/cleanAll.png \
 		../../res/icons8-home-256.png \

@@ -33,6 +33,7 @@ public:
      */
     void showAxis();
 
+
 /*
     void mousePressEvent(QMouseEvent * event);
     void mouseMoveEvent(QMouseEvent * event);
@@ -53,6 +54,7 @@ public slots:
     void btmAddingPoints();
     void btmCleanAll();
     void btmReadFile();
+    void btmSaveToPng();
     // редактирование точек
     void editPoints(QPointF pos, Qt::MouseButton button);
     void emptyFuncs();
@@ -96,11 +98,14 @@ private:
     bool flagEdit = true;
 
     //bottoms
+    Bottom *homeBtm;
     Bottom *punktireBtm;
     Bottom *pointsBtm;
     Bottom *lineBtm;
     Bottom *cleanAllBtm;
     Bottom *readFileBtm;
+    Bottom *saveBtm;
+    QVector<Bottom*> btms;
     void changeBtmColor(bool flag, Bottom &btm, QColor col = QColor(Qt::gray));
     void changeVisible(bool flag, int index);
     void applyButtonStates();
@@ -132,6 +137,6 @@ private:
 
 
     void readFile(const QString &filePath);
-
+    void saveToPng(const QString &filePath);
 };
 

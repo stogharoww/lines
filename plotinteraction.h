@@ -14,6 +14,7 @@ class PlotInteraction : public QObject, public QGraphicsRectItem
     Q_OBJECT
 public:
     explicit PlotInteraction(const QRectF& rect, QGraphicsItem *parent = nullptr);
+    bool getFlagEdit();
 
 
 signals:

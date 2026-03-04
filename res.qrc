@@ -10,5 +10,6 @@
         <file>res/edit.png</file>
         <file>res/cleanAll.png</file>
         <file>res/read.png</file>
+        <file>res/save.png</file>
     </qresource>
 </RCC>
