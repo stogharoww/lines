@@ -9,6 +9,8 @@
 #include <QPen>
 #include <algorithm>
 #include <Curve.h>
+#include <QMessageBox>
+#include <QRegularExpression>
 
 
 
@@ -191,11 +193,20 @@ void PlotAPI::displayMainMenu()
     scene->addItem(cleanAllBtm);
     connect(cleanAllBtm, &Bottom::clicked, this, &PlotAPI::btmCleanAll);
 
+    // взять точки из файла
+
+    readFileBtm = new Bottom("", 40, 40);
+    readFileBtm->setPos(0, 120);
+    readFileBtm->setPuxmap("://res/read.png");
+    scene->addItem(readFileBtm);
+    connect(readFileBtm, &Bottom::clicked, this, &PlotAPI::btmReadFile);
 
     // интерактив
     interaction = new PlotInteraction(graphRect);
     interaction->setZValue(105);
     scene->addItem(interaction);
+
+
 
 
 
@@ -292,11 +303,17 @@ void PlotAPI::wheel(QPointF localPos, int delta)
     // масштабируем функцию
     flagWheel = 1;
 
-    double k = 0.1;
-    _factor -= k * delta / 120;
-    _factor = std::max(0.1, _factor);
+    double zoomStep = 1.1;
 
-    _factor = std::min(_factor, 2.0);
+    if (delta > 0)
+        _factor /= zoomStep;
+    else
+        _factor *= zoomStep;
+
+    _factor = std::max(_factor, 0.0355841);
+    _factor = std::min(_factor, 240463.0);
+
+    //_factor = std::min(_factor, 2.0);
     qDebug() << _factor;
 
     auto funcs = _generator->getFunc();
@@ -372,6 +389,23 @@ void PlotAPI::btmCleanAll()
     _generator->removeAll();
     emptyFuncs();
     //scene->update();
+}
+
+void PlotAPI::btmReadFile()
+{
+
+    QString filePath = QFileDialog::getOpenFileName(
+        this,
+        "Выберите файл",
+        QString(),
+        "Текстовые файлы (*.txt);;Все файлы (*.*)"
+        );
+
+    if (filePath.isEmpty()) return;
+    btmCleanAll();
+    _minX = _maxX = 0;
+    readFile(filePath);
+
 }
 
 void PlotAPI::editPoints(QPointF pos, Qt::MouseButton button)
@@ -476,6 +510,46 @@ QRectF PlotAPI::logWheelRect(QRectF logicalRect)
     QRectF newRect(center - QPointF(newSize.width() / 2, newSize.height() / 2), newSize);
 
     return newRect;
+}
+
+void PlotAPI::readFile(const QString &filePath)
+{
+    QFile file(filePath);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QMessageBox::warning(this, "Ошибка", "Не удалось открыть файл");
+        return;
+    }
+
+    QVector<QPointF> points;
+
+    QTextStream in(&file);
+    in.setEncoding(QStringConverter::Utf8);
+
+    while (!in.atEnd()){
+        QString line = in.readLine().trimmed();
+        if (line.isEmpty())
+            continue;
+
+        QStringList parts = line.split(QRegularExpression("\\s+"));
+        if (parts.size() != 2)
+            continue;
+
+        bool ok1 = false, ok2 = false;
+        double x = parts[0].toDouble(&ok1);
+        double y = parts[1].toDouble(&ok2);
+
+        if (ok1 && ok2)
+            points.append(QPointF(x, y));
+    }
+    //QString content = in.readAll();
+    file.close();
+
+    _generator->setControlPoints(points);
+    CONTROL_POINTS = _generator->getControlPoints();
+
+    refresh();
+
 }
 
 

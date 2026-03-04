@@ -11,6 +11,7 @@
 #include <QPointF>
 #include "generator.h"
 #include "bottom.h"
+#include <QFileDialog>
 
 
 
@@ -51,6 +52,7 @@ public slots:
     void btmLineClicked();
     void btmAddingPoints();
     void btmCleanAll();
+    void btmReadFile();
     // редактирование точек
     void editPoints(QPointF pos, Qt::MouseButton button);
     void emptyFuncs();
@@ -97,6 +99,7 @@ private:
     Bottom *pointsBtm;
     Bottom *lineBtm;
     Bottom *cleanAllBtm;
+    Bottom *readFileBtm;
     void changeBtmColor(bool flag, Bottom &btm, QColor col = QColor(Qt::gray));
     void changeVisible(bool flag, int index);
     void applyButtonStates();
@@ -114,6 +117,7 @@ private:
     bool flagWheel = 0;
 
 
+
     QRectF logWheelRect(QRectF logicalRect);
 
     QVector<Point3D> CONTROL_POINTS
@@ -125,6 +129,8 @@ private:
             {5, 1.2, 0}
         };
 
+
+    void readFile(const QString &filePath);
 
 };
 

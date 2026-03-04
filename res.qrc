@@ -9,5 +9,6 @@
         <file>res/line.png</file>
         <file>res/edit.png</file>
         <file>res/cleanAll.png</file>
+        <file>res/read.png</file>
     </qresource>
 </RCC>
