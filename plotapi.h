@@ -12,6 +12,7 @@
 #include "generator.h"
 #include "bottom.h"
 #include <QFileDialog>
+#include "legend.h"
 
 
 
@@ -138,5 +139,8 @@ private:
 
     void readFile(const QString &filePath);
     void saveToPng(const QString &filePath);
+
+
+    Legend * _legend;
 };
 

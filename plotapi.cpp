@@ -11,7 +11,8 @@
 #include <Curve.h>
 #include <QMessageBox>
 #include <QRegularExpression>
-
+#include <QTextStream>
+#include "legend.h"
 
 
 /**
@@ -78,6 +79,17 @@ void PlotAPI::displayMainMenu()
     btms.clear();
     _rect = new QGraphicsRectItem();
 
+
+    //legends
+    _legend = new Legend();
+    _legend->addLegend("Контрольные точки", QColor(Qt::red));
+    _legend->addLegend("Кривая", QColor(Qt::blue));
+    _legend->addLegend("Контрольный многоугольник", QColor(Qt::black));
+    _legend->setZValue(105);
+    _legend->setPos(weight - 200, 0);
+    scene->addItem(_legend);
+
+
     QBrush brush(QColor(250, 250, 210));
     QBrush innerB(QColor(250, 0, 0));
     rectWeight = weight/1.5;
@@ -142,6 +154,9 @@ void PlotAPI::displayMainMenu()
     axies->setPos(x, y);
     _rect->setBrush(brush);
     axies->syncWithFunc(_logicalRect);
+
+
+
 
     setMinMaxXY(minX, minY, maxX, maxY);
 
@@ -560,7 +575,7 @@ void PlotAPI::readFile(const QString &filePath)
     QVector<QPointF> points;
 
     QTextStream in(&file);
-    in.setCodec("UTF-8");
+    in.setEncoding(QStringConverter::Utf8);
 
     while (!in.atEnd()){
         QString line = in.readLine().trimmed();
