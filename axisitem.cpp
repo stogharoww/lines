@@ -25,12 +25,15 @@ QString AxisItem::formatTickValue(double value, double range)
     if (qAbs(value) < 1e-10) return "0";
 
     // Если диапазон большой — округляем до целого
-    if (range > 10)
+    if (range > 20)
         return QString::number(qRound(value));
+
+    if (range > 5)
+        return QString::number(value, 'f', 1);
 
     // Если диапазон средний — 1 знак после запятой
     if (range > 1)
-        return QString::number(value, 'f', 1);
+        return QString::number(value, 'f', 2);
 
     // Если диапазон маленький — 3 знака
     return QString::number(value, 'f', 3);

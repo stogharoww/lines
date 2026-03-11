@@ -62,7 +62,12 @@ public:
 
 
     void moveAxies(double dx, double dy);
-
+    void syncWithFunc(QRectF logicalRect){
+        setLogicalRange(logicalRect.left(),
+                        logicalRect.right(),
+                        logicalRect.top(),
+                        logicalRect.bottom());
+    }
 
     NumpyC getX();
     NumpyC getY();

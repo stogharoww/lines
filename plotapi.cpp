@@ -141,7 +141,7 @@ void PlotAPI::displayMainMenu()
     scene->addItem(axies);
     axies->setPos(x, y);
     _rect->setBrush(brush);
-
+    axies->syncWithFunc(_logicalRect);
 
     setMinMaxXY(minX, minY, maxX, maxY);
 
