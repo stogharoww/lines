@@ -560,7 +560,7 @@ void PlotAPI::readFile(const QString &filePath)
     QVector<QPointF> points;
 
     QTextStream in(&file);
-    in.setEncoding(QStringConverter::Utf8);
+    in.setCodec("UTF-8");
 
     while (!in.atEnd()){
         QString line = in.readLine().trimmed();

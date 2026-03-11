@@ -2,6 +2,7 @@
 
 #include <QVector>
 #include <functional>
+#include <cmath>
 
 class NumpyC {
 public:

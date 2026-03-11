@@ -1,4 +1,5 @@
 #include "Point3d.h"
+#include <cmath>
 
 Point3D Point3D::cross(const Point3D &iVector) const
 {
